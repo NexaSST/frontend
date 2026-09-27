@@ -1,0 +1,248 @@
+{
+  "meta": {
+    "name": "NexaSST Active Prevention",
+    "description": "Public landing identity derived from the approved mobile direction and the existing calm operational web system. It frames NexaSST as an active prevention instrument rather than a generic SST software category.",
+    "source_references": [
+      "../../../mobile/docs/mobile-visual-direction.png",
+      "../../../mobile/DESIGN.md",
+      "../../../mobile/src/theme/index.ts",
+      "../../DESIGN.md",
+      "mobile-visual-direction-measurement.json"
+    ],
+    "created_at": "2026-09-20"
+  },
+  "design_system": {
+    "color": {
+      "palette_type": "analogous navy and emerald with restrained amber and red semantics",
+      "primary": { "hex": "#09264A", "role": "brand structure, trust, navigation and high emphasis surfaces" },
+      "secondary": { "hex": "#087A58", "role": "primary actions, positive state and active prevention" },
+      "accent": { "hex": "#0c936c", "role": "measured highlight for CTA emphasis, progress and selective visual focus" },
+      "neutral": {
+        "scale": ["#FFFFFF", "#f8f9f7", "#F5F8F9", "#DCE5EA", "#CAD6DF", "#c0c6c8", "#737b83", "#3D536B", "#1c3253", "#10243E", "#06172F", "#040304"],
+        "usage": "White and measured warm white carry the page. Slate values organize borders and supporting copy. Deep navy and the measured near black provide foreground contrast."
+      },
+      "semantic": {
+        "success": "#087A58",
+        "warning": "#F59E0B",
+        "error": "#B42336",
+        "info": "#175EA8"
+      },
+      "surface": {
+        "background": "#f8f9f7",
+        "card": "#FFFFFF",
+        "elevated": "#F5F8F9"
+      },
+      "contrast_strategy": "Dark navy on light fields dominates. White on navy is reserved for decisive chapters. Emerald signals action and state rather than decoration.",
+      "measurement": {
+        "k": 8,
+        "sampling": { "method": "deterministic_stratified", "max_pixels": 160000, "sampled_pixels": 160000 }
+      },
+      "measured_palette": [
+        { "hex": "#f8f9f7", "coverage": 0.7997, "role": "background" },
+        { "hex": "#040304", "coverage": 0.0595, "role": "text" },
+        { "hex": "#0c936c", "coverage": 0.0404, "role": "accent" },
+        { "hex": "#c0c6c8", "coverage": 0.0342, "role": "unassigned" },
+        { "hex": "#737b83", "coverage": 0.034, "role": "unassigned" },
+        { "hex": "#1c3253", "coverage": 0.0267, "role": "unassigned" },
+        { "hex": "#ec702d", "coverage": 0.0034, "role": "unassigned" },
+        { "hex": "#91251c", "coverage": 0.0021, "role": "unassigned" }
+      ]
+    },
+    "typography": {
+      "type_scale": {
+        "display": { "size": "96px desktop, 60px compact", "weight": 650, "line_height": "1", "tracking": "-0.04em" },
+        "heading_1": { "size": "60px desktop, 48px compact", "weight": 650, "line_height": "1", "tracking": "-0.035em" },
+        "heading_2": { "size": "48px desktop, 36px compact", "weight": 650, "line_height": "1", "tracking": "-0.03em" },
+        "heading_3": { "size": "30px", "weight": 650, "line_height": "36px", "tracking": "-0.02em" },
+        "body": { "size": "18px", "weight": 400, "line_height": "28px", "tracking": "0" },
+        "body_small": { "size": "16px", "weight": 400, "line_height": "24px", "tracking": "0" },
+        "caption": { "size": "14px", "weight": 550, "line_height": "20px", "tracking": "0" },
+        "overline": { "size": "12px", "weight": 650, "line_height": "16px", "tracking": "0.08em" }
+      },
+      "font_families": {
+        "heading": "Manrope, sans-serif",
+        "body": "Manrope, sans-serif",
+        "mono": "Geist Mono, ui-monospace, monospace"
+      },
+      "font_style_notes": "One humanist geometric family, sentence case, no italics and no black weight. Headlines use meaningful line breaks and balanced wrapping."
+    },
+    "spacing": {
+      "base_unit": "4px",
+      "scale": ["0", "2px", "4px", "8px", "12px", "16px", "24px", "32px", "40px", "48px", "64px", "80px", "96px"],
+      "content_density": "spacious marketing shell with compact product evidence",
+      "section_rhythm": "Large 80px to 96px pauses between argument chapters, with one calm short interlude before pricing and the final CTA."
+    },
+    "layout": {
+      "grid_system": "12 column responsive grid with stable outer rails",
+      "max_content_width": "1280px",
+      "columns": 12,
+      "gutter": "24px desktop, 16px compact",
+      "breakpoints": ["640px", "768px", "1024px", "1280px"],
+      "alignment_tendency": "mixed, anchored by a strict grid with controlled editorial offsets"
+    },
+    "shape": {
+      "border_radius": { "small": "6px", "medium": "12px", "large": "16px", "pill": "9999px" },
+      "border_usage": "Subtle one pixel borders around true groups and controls; no decorative single side borders.",
+      "divider_style": "One pixel cool slate dividers on light surfaces and translucent white dividers on navy."
+    },
+    "elevation": {
+      "shadow_style": "soft diffused and sparse",
+      "levels": {
+        "low": "0 8px 24px rgb(6 23 47 / 8%)",
+        "medium": "0 18px 48px rgb(6 23 47 / 12%)",
+        "high": "0 28px 80px rgb(6 23 47 / 18%)"
+      },
+      "depth_cues": "Layer overlap, measured shadow, tonal surface shifts and the dimensional safety assets."
+    },
+    "iconography": {
+      "style": "Phosphor line icons for interface plus soft studio 3D safety objects for campaign moments",
+      "stroke_weight": "1.75px to 2px",
+      "size_scale": ["16px", "20px", "24px", "32px"],
+      "preferred_set": "Phosphor"
+    },
+    "motion": {
+      "easing": {
+        "out": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "in_out": "cubic-bezier(0.77, 0, 0.175, 1)",
+        "drawer": "cubic-bezier(0.32, 0.72, 0, 1)"
+      },
+      "duration_scale": { "micro": "140ms", "normal": "220ms", "macro": "800ms" },
+      "entrance_pattern": "Occasional fade and 8px rise for narrative content; word by word color activation in the tagline reveal.",
+      "exit_pattern": "Faster opacity and transform retreat without scale below 0.95.",
+      "philosophy": "Functional and explanatory. One authored brand moment, crisp interaction feedback, no repeated spectacle and a reduced motion path."
+    },
+    "components": {
+      "button_style": "Emerald primary button, 12px radius, 8px vertical and 12px horizontal padding, visible focus ring and 0.97 active scale.",
+      "input_style": "White surface, full one pixel slate border, 12px radius, 48px minimum height and explicit inline validation.",
+      "card_style": "Cards only for grouped choices, proof or pricing; otherwise use open grid composition, dividers and whitespace.",
+      "navigation_pattern": "Compact floating light navigation on desktop and a full screen accessible mobile overlay anchored to the trigger.",
+      "modal_style": "Centered, restrained 16px radius, dimmed navy backdrop and no dramatic scale animation.",
+      "list_style": "Editorial rows with aligned evidence, deadlines or outcomes instead of repeated isolated cards.",
+      "component_notes": "Every interactive element includes hover, active, focus, loading, disabled and error treatment. Use real product screenshots and real prices only."
+    }
+  },
+  "design_style": {
+    "aesthetic": {
+      "mood": ["calm", "preventive", "credible", "field ready", "financially responsible"],
+      "visual_metaphor": "A precision prevention instrument that detects weak signals before they become incidents, penalties or operational loss.",
+      "era_influence": "Contemporary Brazilian B2B with editorial information design and native mobile utility.",
+      "genre": "trust driven B2B SaaS with industrial campaign art direction",
+      "personality_traits": ["observant", "direct", "responsible", "practical", "meticulous"],
+      "adjectives": ["structured", "human", "tactile", "clear", "proactive"]
+    },
+    "visual_language": {
+      "complexity": "moderate",
+      "ornamentation": "subtle 3D safety accents with one high impact hero composition",
+      "whitespace_usage": "generous, used to separate recognition, explanation, proof and decision",
+      "visual_weight_distribution": "Deep navy chapters anchor a mostly light page; emerald concentrates on action and prevention state.",
+      "focal_strategy": "Progressive reveal from risk recognition to operational proof to commercial action.",
+      "contrast_level": "high and accessible",
+      "texture_usage": "Matte surfaces and soft object shadows; no ambient mesh gradients or decorative noise fields."
+    },
+    "composition": {
+      "hierarchy_method": "scale contrast, spatial isolation and evidence placed beside the claim it supports",
+      "balance_type": "controlled asymmetric",
+      "flow_direction": "top left diagnostic hook into a vertical cause and response narrative",
+      "grouping_strategy": "open chapters, continuous evidence rows and only a few meaningful containers",
+      "negative_space_role": "creates confidence and gives financial and legal claims room to be read carefully"
+    },
+    "imagery": {
+      "photo_treatment": "If used, authentic Brazilian field environments with a single cool navy grade and clear safe areas for text.",
+      "illustration_style": "Existing soft 3D safety objects with transparent background, studio light and consistent matte materials.",
+      "graphic_elements": "The dimensional shield, inspection timeline, evidence trail, QR and product screen crops.",
+      "pattern_usage": "No repeating decorative pattern; a single route or trace line may connect prevention stages.",
+      "image_shape": "Clean cutouts, wide environmental crops and device or browser frames with 16px radius."
+    },
+    "interaction_feel": {
+      "feedback_style": "Immediate and quiet with press depth and precise focus",
+      "hover_behavior": "Small contrast shift or 2px lift on fine pointers only",
+      "transition_personality": "crisp ease out for UI and measured cinematic pacing only for explanatory sections",
+      "loading_style": "Skeletons shaped like the content or a direct inline status",
+      "microinteraction_density": "low to moderate"
+    },
+    "brand_voice_in_ui": {
+      "tone": "prevention first, specific and operational",
+      "formality": "professional Brazilian Portuguese without legalistic distance",
+      "cta_style": "direct invitation tied to a concrete diagnostic or demonstration",
+      "empty_state_approach": "Explain what is missing, why it matters and the next real action.",
+      "error_tone": "Direct, specific and recovery oriented without blame."
+    }
+  },
+  "visual_effects": {
+    "overview": {
+      "effect_intensity": "subtle-accent",
+      "performance_tier": "lightweight",
+      "fallback_strategy": "Disable spatial movement and preserve opacity and color feedback under reduced motion.",
+      "primary_technology": "CSS transitions and IntersectionObserver"
+    },
+    "background_effects": {
+      "type": "none",
+      "description": "Flat brand surfaces are used instead of animated or gradient backgrounds.",
+      "technology": "CSS",
+      "params": { "color_palette": ["#f8f9f7", "#FFFFFF", "#09264A", "#06172F"], "speed": "0", "density": "0", "opacity": "1", "blend_mode": "normal" }
+    },
+    "particle_systems": {
+      "enabled": false,
+      "type": "none",
+      "description": "Particles would weaken the operational and prevention led positioning.",
+      "technology": "none",
+      "params": { "count": 0, "shape": "none", "size_range": "none", "movement_pattern": "none", "color_behavior": "none", "interaction": "none", "spawn_area": "none" }
+    },
+    "3d_elements": {
+      "enabled": true,
+      "type": "hero-model",
+      "description": "Pre rendered dimensional logo and safety objects form an authored hero and occasional section anchors.",
+      "technology": "optimized transparent WebP or PNG assets",
+      "params": { "renderer": "pre rendered", "lighting": "soft upper left studio light", "camera": "three quarter product view", "materials": "matte polymer, rubber and brushed metal", "geometry": "recognizable PPE and prevention equipment", "post_processing": ["soft contact shadow", "clean alpha edge"], "interaction_model": "subtle pointer parallax on fine pointers only" }
+    },
+    "shader_effects": {
+      "enabled": false,
+      "type": "none",
+      "description": "No custom shaders are required.",
+      "technology": "none",
+      "params": { "uniforms": [], "vertex_manipulation": "none", "fragment_output": "none", "noise_type": "none", "distortion": "none" }
+    },
+    "scroll_effects": {
+      "parallax": { "enabled": true, "layers": 2, "depth_range": "0px to 16px", "speed_curve": "very slow and clamped" },
+      "scroll_triggered_animations": { "enabled": true, "trigger_points": "once at 15 percent viewport entry", "animation_type": "fade up and word color reveal", "scrub_behavior": "tagline words only; other entrances are not scrubbed" },
+      "scroll_morphing": { "enabled": false, "description": "No geometry morphing; it would compete with the argument." }
+    },
+    "text_effects": {
+      "type": "split-word-activate",
+      "description": "The mandatory benefit statement activates word by word from muted navy to full navy as it crosses a reading line.",
+      "technology": "IntersectionObserver with spans",
+      "params": { "split_strategy": "by-word", "animation_per_unit": "color and opacity only", "stagger": "triggered by word position", "effect_style": "quiet emphasis" }
+    },
+    "cursor_effects": {
+      "enabled": false,
+      "type": "none",
+      "description": "Native cursor behavior supports trust and usability.",
+      "params": { "shape": "default", "size": "default", "blend_mode": "normal", "trail": "none", "interaction_zone": "none" }
+    },
+    "image_effects": {
+      "type": "parallax-tilt",
+      "description": "Hero safety objects and one product frame can move by a few pixels to communicate depth without spectacle.",
+      "technology": "CSS transforms with pointer media query",
+      "params": { "filter_pipeline": "none", "hover_transform": "translate3d clamped to 8px", "reveal_animation": "opacity plus translateY 8px", "distortion_type": "none" }
+    },
+    "glassmorphism_neumorphism": {
+      "enabled": true,
+      "style": "light navigation glass only",
+      "params": { "blur_radius": "20px", "transparency": "92 percent", "border_treatment": "one pixel slate translucent", "shadow_type": "soft low", "light_source_angle": "upper left" }
+    },
+    "canvas_drawings": {
+      "enabled": false,
+      "type": "none",
+      "description": "The page does not need canvas rendering.",
+      "technology": "none",
+      "params": { "draw_method": "none", "animation_loop": "none", "color_scheme": "none", "responsiveness": "none", "interaction": "none" }
+    },
+    "svg_animations": {
+      "enabled": false,
+      "type": "none",
+      "description": "The official logo remains an image asset and is not reconstructed as an animated SVG.",
+      "params": { "animation_method": "none", "path_morphing": false, "stroke_animation": false, "filter_effects": "none" }
+    },
+    "composite_notes": "The authored depth comes from real pre rendered brand assets, not a realtime 3D scene. Use one signature hero arrangement and keep subsequent motion quieter. The reduced motion version removes parallax and transforms while retaining readable state changes."
+  }
+}

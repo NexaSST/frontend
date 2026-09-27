@@ -1,0 +1,22 @@
+[build]
+  command = "npm run check && node scripts/build-netlify-redirects.mjs"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# TODO(NETLIFY): set production branch=main and enable develop branch deploys in UI.
+# Set API_ORIGIN in Netlify environment variables with branch/context scope:
+# main -> https://api.example.com; develop -> https://api-homolog.example.com.
+# Never set DB_PASSWORD, SMTP_PASSWORD or AWS credentials in frontend variables.
+
+[[headers]]
+  for = "/v1/*"
+  [headers.values]
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

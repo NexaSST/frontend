@@ -1,0 +1,50 @@
+import { readFile } from 'node:fs/promises';
+import { expect, test } from '@playwright/test';
+
+test('real seed: corporate catalog, evidence upload, completion and branch restrictions', async ({ page, context }) => {
+  test.skip(process.env.NEXASST_RUN_SEED_E2E !== '1', 'Requires the local training seed and MinIO.');
+  const seed = JSON.parse(await readFile('../backend/.seed/training/access.json', 'utf8'));
+  const root = `/v1/companies/${seed.companyId}/branches/${seed.branches[0]}`;
+  const login = async (account: { email: string; password: string }) => {
+    const response = await page.request.post('/v1/auth/company/web/login', { data: { email: account.email, password: account.password } });
+    expect(response.status()).toBe(200);
+  };
+  await login(seed.accounts[0]);
+  await page.goto(`/workspace/${seed.companyId}/${seed.branches[0]}/training?tab=frequencies&page=1&q=`);
+  await expect(page.getByRole('button', { name: /Nova frequência/ })).toBeVisible();
+  await expect(page.getByText('Trienal', { exact: true })).toBeVisible();
+  await page.goto(`/workspace/${seed.companyId}/${seed.branches[0]}/training?tab=expirations&page=1&q=`);
+  await expect(page.getByText('DEMO | Bruno Vencido', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('Vencido', { exact: true }).first()).toBeVisible();
+  await page.goto(`/workspace/${seed.companyId}/${seed.branches[0]}/training?tab=events&page=1&q=&action=new`);
+  await page.getByRole('combobox', { name: 'Curso', exact: true }).click();
+  await page.getByRole('option', { name: /DEMO \| Capacitação operacional/ }).click();
+  await page.getByRole('combobox', { name: 'Modalidade', exact: true }).click();
+  await page.getByRole('option', { name: 'Periódico', exact: true }).click();
+  await page.getByLabel('Título', { exact: true }).fill(`DEMO | Teste real ${Date.now()}`);
+  await page.getByRole('button', { name: 'Continuar para participantes' }).click();
+  await page.getByRole('checkbox', { name: /Ana Em Dia/ }).check();
+  await page.getByRole('button', { name: 'Continuar para evidências' }).click();
+  await expect(page.getByRole('button', { name: 'Revisar turma' })).toBeDisabled();
+  await page.getByLabel('Evidência coletiva (PDF, JPEG ou PNG)').setInputFiles(seed.evidencePath);
+  await page.getByRole('button', { name: 'Revisar turma' }).click();
+  const completed = page.waitForResponse((response) => response.url().includes('/training-events/') && response.url().endsWith('/complete') && response.request().method() === 'POST');
+  await page.getByRole('button', { name: 'Concluir e validar evidências' }).click();
+  expect((await completed).status()).toBe(200);
+  const completions = await page.request.get(`${root}/people/${seed.people[0].id}/training-completions`);
+  const result = (await completions.json()).find((item: { courseId: string }) => item.courseId === seed.courses.monthly);
+  expect(result.modality).toBe('periodic'); expect(result.validityDaysSnapshot).toBe(30); expect(result.status).toBe('accepted');
+  const today = new Date().toISOString().slice(0, 10); const expires = new Date(`${today}T12:00:00Z`); expires.setUTCDate(expires.getUTCDate() + 30);
+  expect(result.expiresOn).toBe(expires.toISOString().slice(0, 10));
+  await context.clearCookies(); await login(seed.accounts[1]);
+  await page.goto(`/workspace/${seed.companyId}/${seed.branches[0]}/training?tab=frequencies&page=1&q=`);
+  await expect(page.getByText('Trienal', { exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Nova frequência/ })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Editar', exact: true })).toHaveCount(0);
+  const denied = await page.evaluate(async (path) => {
+    const token = document.cookie.split('; ').find((c) => c.startsWith('nexasst_csrf='))?.split('=')[1];
+    const response = await fetch(`${path}/training-frequencies`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': decodeURIComponent(token ?? '') }, body: JSON.stringify({ name: 'Não deve criar', days: 10 }) });
+    return { status: response.status, body: await response.json() };
+  }, root);
+  expect(denied.status).toBe(403); expect(denied.body.code).toBe('COMPANY_SCOPE_REQUIRED');
+});

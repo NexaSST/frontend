@@ -1,0 +1,149 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AlertTriangle, ClipboardList, Clock3, FileCheck2, MapPinned, ShieldCheck } from "lucide-react";
+import { useState } from "react";
+import { sileo } from "sileo";
+import { Badge, Button, Checkbox, CheckboxField, Input, Select, Textarea } from "../../components/ui/index.js";
+import { apiJson, apiPage } from "../../lib/api.js";
+import { DataTable, EditorPanel, Field, FormModal, ListToolbar, QueryState, type ModuleSearch, type Scope } from "../shared.js";
+
+type Props = {
+  scope: Scope;
+  tab: string;
+  search: ModuleSearch;
+  permissions: string[];
+  setSearch: (patch: Partial<ModuleSearch>) => void;
+};
+
+interface ConfinedSpace {
+  id: string;
+  code: string;
+  name: string;
+  locationText: string | null;
+  registrationStatus: "active" | "inactive";
+  operationalRestriction: "none" | "maintenance" | "interdicted";
+  version: number;
+  publicPath: string;
+}
+interface Revision { id: string; revisionNo: number; status: "draft" | "submitted" | "approved" | "superseded"; sha256: string; criticalChange: boolean; criticalChangeReason: string | null; manifest: { classification: string | null; description: string | null; accesses: string[]; hazards: string[] }; }
+interface RescuePlan { id: string; executorKind: "own" | "supplier"; supplierId: string | null; supplierName: string | null; revisions: Array<{ id: string; revisionNo: number; status: "draft" | "submitted" | "approved" | "suspended"; sha256: string; reviewDueOn: string | null }>; }
+interface ConfinedSpaceDetail extends ConfinedSpace { revisions: Revision[]; rescuePlans: RescuePlan[] }
+interface PreventiveQueue { asOf: string; plansToReview: Array<{ spaceId: string; code: string; name: string; revisionId: string; reviewDueOn: string }>; interdicted: Array<{ id: string; code: string; name: string; locationText: string | null }>; withoutApprovedPlan: Array<{ id: string; code: string; name: string }>; awaitingTechnicalReview: Array<{ id: string; revisionId: string; type: string; revisionNo: number; submittedAt: string; spaceId: string; code: string; name: string }> }
+type SpaceForm = { code: string; name: string; locationText: string; classification: string; description: string; accesses: string; hazards: string; criticalChange: boolean; criticalChangeReason: string };
+const emptySpace: SpaceForm = { code: "", name: "", locationText: "", classification: "", description: "", accesses: "", hazards: "", criticalChange: false, criticalChangeReason: "" };
+
+const root = ({ companyId, branchId }: Scope) =>
+  `v1/companies/${companyId}/branches/${branchId}`;
+
+function restrictionBadge(value: ConfinedSpace["operationalRestriction"]) {
+  if (value === "none") return <Badge tone="success">Sem restrição</Badge>;
+  if (value === "maintenance") return <Badge tone="warning">Em manutenção</Badge>;
+  return <Badge tone="danger">Interditado</Badge>;
+}
+
+function spacePayload(form: SpaceForm) {
+  return { code: form.code.trim(), name: form.name.trim(), ...(form.locationText.trim() ? { locationText: form.locationText.trim() } : {}), ...(form.classification.trim() ? { classification: form.classification.trim() } : {}), ...(form.description.trim() ? { description: form.description.trim() } : {}), accesses: form.accesses.split("\n").map((item) => item.trim()).filter(Boolean), hazards: form.hazards.split("\n").map((item) => item.trim()).filter(Boolean), criticalChange: form.criticalChange, ...(form.criticalChange && form.criticalChangeReason.trim() ? { criticalChangeReason: form.criticalChangeReason.trim() } : {}) };
+}
+
+function Overview({ scope, search, setSearch, permissions }: Omit<Props, "tab">) {
+  const endpoint = `${root(scope)}/confined-spaces`;
+  const qc = useQueryClient();
+  const [formOpen, setFormOpen] = useState(false);
+  const [spaceForm, setSpaceForm] = useState<SpaceForm>(emptySpace);
+  const selectedId = search.id;
+  const spaces = useQuery({
+    queryKey: ["confined-spaces", endpoint, search.page, search.q],
+    queryFn: () => apiPage<ConfinedSpace>(endpoint, { searchParams: { page: search.page, pageSize: 25, ...(search.q ? { search: search.q } : {}) } }),
+  });
+  const preventive = useQuery({ queryKey: ["confined-spaces-preventive", endpoint], queryFn: () => apiJson<PreventiveQueue>(`${endpoint}/preventive-queue`) });
+  const rows = spaces.data?.rows ?? [];
+  const detail = useQuery({ queryKey: ["confined-space", endpoint, selectedId], queryFn: () => apiJson<ConfinedSpaceDetail>(`${endpoint}/${selectedId}`), enabled: Boolean(selectedId) });
+  const save = useMutation({ mutationFn: async () => {
+    const body = spacePayload(spaceForm);
+    if (!body.code || !body.name || !body.accesses.length || !body.hazards.length) throw new Error("Preencha identificação, acessos e perigos.");
+    if (selectedId && detail.data) return apiJson(`${endpoint}/${selectedId}/revisions`, { method: "post", json: { ...body, expectedVersion: detail.data.version } });
+    return apiJson(endpoint, { method: "post", json: body });
+  }, onSuccess: async () => { await qc.invalidateQueries({ queryKey: ["confined-spaces"] }); await qc.invalidateQueries({ queryKey: ["confined-space"] }); setFormOpen(false); setSpaceForm(emptySpace); sileo.success({ title: selectedId ? "Nova revisão criada" : "Espaço confinado cadastrado" }); }, onError: (error) => sileo.error({ title: error instanceof Error ? error.message : "Não foi possível salvar o espaço" }) });
+  const submit = useMutation({ mutationFn: (revision: Revision) => apiJson(`${endpoint}/${selectedId}/revisions/${revision.id}/submit`, { method: "post", json: { expectedRevisionSha256: revision.sha256 } }), onSuccess: async () => { await qc.invalidateQueries({ queryKey: ["confined-space"] }); sileo.success({ title: "Revisão enviada para homologação" }); }, onError: () => sileo.error({ title: "Não foi possível submeter a revisão" }) });
+  const approve = useMutation({ mutationFn: (revision: Revision) => apiJson(`${endpoint}/${selectedId}/revisions/${revision.id}/approve`, { method: "post", json: { expectedRevisionSha256: revision.sha256 } }), onSuccess: async () => { await qc.invalidateQueries({ queryKey: ["confined-space"] }); sileo.success({ title: "Revisão homologada" }); }, onError: () => sileo.error({ title: "A homologação requer responsável técnico designado" }) });
+  const publish = useMutation({ mutationFn: () => { const revision = detail.data?.revisions.find((item) => item.status === "approved"); if (!revision) throw new Error("Homologue uma revisão antes de publicar."); const planRevision = detail.data?.rescuePlans.flatMap((plan) => plan.revisions).find((item) => item.status === "approved"); return apiJson(`${endpoint}/${selectedId}/publications`, { method: "post", json: { confinedSpaceRevisionId: revision.id, ...(planRevision ? { rescuePlanRevisionId: planRevision.id } : {}) } }); }, onSuccess: () => sileo.success({ title: "Recorte público publicado" }), onError: (error) => sileo.error({ title: error instanceof Error ? error.message : "Não foi possível publicar o QR" }) });
+  const submitPlan = useMutation({ mutationFn: ({ plan, revision }: { plan: RescuePlan; revision: RescuePlan["revisions"][number] }) => apiJson(`${endpoint}/${selectedId}/rescue-plans/${plan.id}/revisions/${revision.id}/submit`, { method: "post", json: { expectedRevisionSha256: revision.sha256 } }), onSuccess: async () => { await qc.invalidateQueries({ queryKey: ["confined-space"] }); sileo.success({ title: "Plano enviado para homologação" }); }, onError: () => sileo.error({ title: "Não foi possível submeter o plano" }) });
+  const approvePlan = useMutation({ mutationFn: ({ plan, revision }: { plan: RescuePlan; revision: RescuePlan["revisions"][number] }) => apiJson(`${endpoint}/${selectedId}/rescue-plans/${plan.id}/revisions/${revision.id}/approve`, { method: "post", json: { expectedRevisionSha256: revision.sha256 } }), onSuccess: async () => { await qc.invalidateQueries({ queryKey: ["confined-space"] }); sileo.success({ title: "Plano homologado" }); }, onError: () => sileo.error({ title: "A homologação requer responsável técnico designado" }) });
+  const active = rows.filter((space) => space.registrationStatus === "active").length;
+  const restricted = rows.filter((space) => space.operationalRestriction !== "none").length;
+  const queue = preventive.data;
+
+  return <div className="confined-space-overview">
+    <section className="confined-space-intro">
+      <div>
+        <span className="workspace-eyebrow">Módulo independente</span>
+        <h2>Inventário de Espaços Confinados</h2>
+        <p>Cadastre características, perigos e planos de resgate. A consulta por QR é um recorte aprovado e nunca autoriza entrada.</p>
+      </div>
+      <ShieldCheck aria-hidden="true" />
+    </section>
+    <section className="confined-space-metrics" aria-label="Resumo do inventário">
+      <article><MapPinned aria-hidden="true" /><span>Registros nesta página</span><strong>{rows.length}</strong></article>
+      <article><ShieldCheck aria-hidden="true" /><span>ECs ativos</span><strong>{active}</strong></article>
+      <article><ClipboardList aria-hidden="true" /><span>Com restrição operacional</span><strong className={restricted ? "metric-warning" : undefined}>{restricted}</strong></article>
+      <article><FileCheck2 aria-hidden="true" /><span>Fluxo de publicação</span><strong>Revisado</strong></article>
+    </section>
+    <section className="content-section">
+      <header className="section-header"><div><span className="workspace-eyebrow">Gestão preventiva</span><h2>O que exige atenção</h2><p>Fila consolidada em {queue?.asOf ?? "—"}. Itens levam à revisão do EC; não representam autorização de entrada.</p></div></header>
+      <QueryState loading={preventive.isLoading} error={preventive.isError}>{queue && <div className="confined-space-preventive-grid">
+        <article className="confined-space-preventive-card"><Clock3 aria-hidden="true" /><span>Planos a revisar</span><strong>{queue.plansToReview.length}</strong><div>{queue.plansToReview.slice(0, 3).map((item) => <button key={item.revisionId} type="button" onClick={() => setSearch({ id: item.spaceId })}>{item.code} · vence {item.reviewDueOn}</button>)}{!queue.plansToReview.length && <p>Sem revisão pendente.</p>}</div></article>
+        <article className="confined-space-preventive-card is-danger"><AlertTriangle aria-hidden="true" /><span>ECs interditados</span><strong>{queue.interdicted.length}</strong><div>{queue.interdicted.slice(0, 3).map((item) => <button key={item.id} type="button" onClick={() => setSearch({ id: item.id })}>{item.code} · {item.name}</button>)}{!queue.interdicted.length && <p>Nenhum EC interditado.</p>}</div></article>
+        <article className="confined-space-preventive-card"><ClipboardList aria-hidden="true" /><span>Sem plano aprovado</span><strong>{queue.withoutApprovedPlan.length}</strong><div>{queue.withoutApprovedPlan.slice(0, 3).map((item) => <button key={item.id} type="button" onClick={() => setSearch({ id: item.id })}>{item.code} · {item.name}</button>)}{!queue.withoutApprovedPlan.length && <p>Todos têm plano aprovado.</p>}</div></article>
+        <article className="confined-space-preventive-card"><FileCheck2 aria-hidden="true" /><span>Aguardando responsável técnico</span><strong>{queue.awaitingTechnicalReview.length}</strong><div>{queue.awaitingTechnicalReview.slice(0, 3).map((item) => <button key={item.id} type="button" onClick={() => setSearch({ id: item.spaceId })}>{item.code} · {item.type} r{item.revisionNo}</button>)}{!queue.awaitingTechnicalReview.length && <p>Nenhuma revisão submetida.</p>}</div></article>
+      </div>}</QueryState>
+    </section>
+    <section className="content-section">
+      <header className="section-header"><div><h2>Espaços da filial</h2><p>Consulte o cadastro antes de preparar ou vincular condições de trabalho.</p></div></header>
+      <ListToolbar value={search.q} onChange={(q) => setSearch({ q, page: 1 })} onCreate={permissions.includes("confined_spaces.manage") ? () => { setSpaceForm(emptySpace); setFormOpen(true); } : undefined} createLabel="Cadastrar EC" />
+      <QueryState loading={spaces.isLoading} error={spaces.isError}>
+        <DataTable columns={["Código", "Espaço", "Localização", "Cadastro", "Condição operacional", "Revisão"]} rows={rows.map((space) => [space.code, space.name, space.locationText ?? "—", <Badge key={`${space.id}-registration`} tone={space.registrationStatus === "active" ? "success" : "neutral"}>{space.registrationStatus === "active" ? "Ativo" : "Inativo"}</Badge>, restrictionBadge(space.operationalRestriction), `v${space.version}`])} keyOf={(index) => rows[index]!.id} empty="Ainda não há espaços confinados cadastrados nesta filial." renderActions={(index) => <Button size="sm" variant="ghost" onClick={() => setSearch({ id: rows[index]!.id })}>Revisar</Button>} />
+      </QueryState>
+    </section>
+    {selectedId && <EditorPanel title={detail.data ? `${detail.data.code} · ${detail.data.name}` : "Carregando espaço"} description="Revisões registram o cadastro técnico; a publicação QR mostra somente o recorte aprovado." onClose={() => setSearch({ id: undefined })}>
+      <QueryState loading={detail.isLoading} error={detail.isError}>{detail.data && <div className="form-stack">
+        <dl className="detail-list"><div><dt>Cadastro</dt><dd>{detail.data.registrationStatus === "active" ? "Ativo" : "Inativo"}</dd></div><div><dt>Condição</dt><dd>{restrictionBadge(detail.data.operationalRestriction)}</dd></div><div><dt>Planos de resgate</dt><dd>{detail.data.rescuePlans.length}</dd></div></dl>
+        <Button variant="secondary" onClick={() => { const revision = detail.data!.revisions[0]; setSpaceForm({ code: detail.data!.code, name: detail.data!.name, locationText: detail.data!.locationText ?? "", classification: revision?.manifest.classification ?? "", description: revision?.manifest.description ?? "", accesses: revision?.manifest.accesses.join("\n") ?? "", hazards: revision?.manifest.hazards.join("\n") ?? "", criticalChange: false, criticalChangeReason: "" }); setFormOpen(true); }}>Criar nova revisão</Button>
+        <section className="confined-space-revision-list"><h3>Revisões do cadastro</h3>{detail.data.revisions.map((revision) => <div key={revision.id}><strong>Revisão {revision.revisionNo}</strong><Badge tone={revision.status === "approved" ? "success" : revision.status === "submitted" ? "info" : "warning"}>{revision.status}</Badge>{revision.status === "draft" && <Button size="sm" onClick={() => submit.mutate(revision)} loading={submit.isPending}>Submeter</Button>}{revision.status === "submitted" && permissions.includes("confined_spaces.approve") && <Button size="sm" onClick={() => approve.mutate(revision)} loading={approve.isPending}>Homologar</Button>}</div>)}</section>
+        <section className="confined-space-revision-list"><h3>Planos de resgate</h3>{detail.data.rescuePlans.length ? detail.data.rescuePlans.flatMap((plan) => plan.revisions.map((revision) => <div key={revision.id}><strong>Plano {plan.executorKind === "own" ? "próprio" : plan.supplierName ?? "terceirizado"} · revisão {revision.revisionNo}</strong><Badge tone={revision.status === "approved" ? "success" : revision.status === "submitted" ? "info" : revision.status === "suspended" ? "danger" : "warning"}>{revision.status}</Badge>{revision.status === "draft" && <Button size="sm" onClick={() => submitPlan.mutate({ plan, revision })} loading={submitPlan.isPending}>Submeter</Button>}{revision.status === "submitted" && permissions.includes("confined_spaces.approve") && <Button size="sm" onClick={() => approvePlan.mutate({ plan, revision })} loading={approvePlan.isPending}>Homologar</Button>}</div>)) : <p className="body-copy">Nenhum plano de resgate cadastrado.</p>}</section>
+        {permissions.includes("confined_spaces.approve") && <Button onClick={() => publish.mutate()} loading={publish.isPending}>Publicar recorte QR</Button>}
+      </div>}</QueryState>
+    </EditorPanel>}
+    {formOpen && <FormModal title={selectedId ? "Nova revisão de EC" : "Cadastrar espaço confinado"} description="A revisão é um cadastro técnico. Ela não libera entrada no espaço." onClose={() => setFormOpen(false)}><form className="form-stack" onSubmit={(event) => { event.preventDefault(); save.mutate(); }}><div className="form-row"><Field label="Código"><Input required value={spaceForm.code} onChange={(event) => setSpaceForm({ ...spaceForm, code: event.target.value })} /></Field><Field label="Nome"><Input required value={spaceForm.name} onChange={(event) => setSpaceForm({ ...spaceForm, name: event.target.value })} /></Field></div><Field label="Localização"><Input value={spaceForm.locationText} onChange={(event) => setSpaceForm({ ...spaceForm, locationText: event.target.value })} /></Field><Field label="Classificação"><Input value={spaceForm.classification} onChange={(event) => setSpaceForm({ ...spaceForm, classification: event.target.value })} /></Field><Field label="Descrição"><Textarea value={spaceForm.description} onChange={(event) => setSpaceForm({ ...spaceForm, description: event.target.value })} /></Field><Field label="Acessos — um por linha"><Textarea required value={spaceForm.accesses} onChange={(event) => setSpaceForm({ ...spaceForm, accesses: event.target.value })} /></Field><Field label="Perigos — um por linha"><Textarea required value={spaceForm.hazards} onChange={(event) => setSpaceForm({ ...spaceForm, hazards: event.target.value })} /></Field>{selectedId && <CheckboxField label="Alteração crítica" description="Suspende planos aprovados relacionados ao espaço."><Checkbox checked={spaceForm.criticalChange} onChange={(event) => setSpaceForm({ ...spaceForm, criticalChange: event.target.checked })} /></CheckboxField>}{spaceForm.criticalChange && <Field label="Justificativa da alteração crítica"><Textarea required value={spaceForm.criticalChangeReason} onChange={(event) => setSpaceForm({ ...spaceForm, criticalChangeReason: event.target.value })} /></Field>}<div className="form-modal__actions"><Button type="button" variant="secondary" onClick={() => setFormOpen(false)}>Cancelar</Button><Button type="submit" loading={save.isPending}>Salvar revisão</Button></div></form></FormModal>}
+  </div>;
+}
+
+function RescuePlans({ scope }: { scope: Scope }) {
+  const qc = useQueryClient(); const base = root(scope); const [spaceId, setSpaceId] = useState(""); const [scenarioName, setScenarioName] = useState(""); const [response, setResponse] = useState("");
+  const spaces = useQuery({ queryKey: ["confined-spaces-plan-picker", base], queryFn: () => apiPage<ConfinedSpace>(`${base}/confined-spaces`, { searchParams: { page: 1, pageSize: 100 } }) });
+  const save = useMutation({ mutationFn: () => { if (!spaceId || !scenarioName.trim() || !response.trim()) throw new Error("Selecione o EC e informe o cenário de resgate."); return apiJson(`${base}/confined-spaces/${spaceId}/rescue-plans`, { method: "post", json: { executorKind: "own", scenarios: [{ name: scenarioName.trim(), response: response.trim() }] } }); }, onSuccess: async () => { await qc.invalidateQueries({ queryKey: ["confined-space"] }); setScenarioName(""); setResponse(""); sileo.success({ title: "Plano de resgate criado em rascunho" }); }, onError: (error) => sileo.error({ title: error instanceof Error ? error.message : "Não foi possível criar o plano" }) });
+  return <section className="content-section"><header className="section-header"><div><h2>Plano de resgate</h2><p>Crie o primeiro cenário para um EC. A revisão precisa ser submetida e homologada pelo responsável técnico.</p></div></header><form className="form-stack" onSubmit={(event) => { event.preventDefault(); save.mutate(); }}><Field label="Espaço confinado"><Select required value={spaceId} onChange={(event) => setSpaceId(event.target.value)}><option value="">Selecione</option>{spaces.data?.rows.map((space) => <option value={space.id} key={space.id}>{space.code} · {space.name}</option>)}</Select></Field><Field label="Cenário de resgate"><Input required value={scenarioName} onChange={(event) => setScenarioName(event.target.value)} placeholder="Ex.: Resgate por mal súbito" /></Field><Field label="Resposta prevista"><Textarea required value={response} onChange={(event) => setResponse(event.target.value)} placeholder="Acionamento, isolamento e primeira resposta." /></Field><Button type="submit" loading={save.isPending}>Criar plano em rascunho</Button></form></section>;
+}
+
+function TechnicalResponsible({ scope }: { scope: Scope }) {
+  const base = root(scope); const [accountId, setAccountId] = useState(""); const [registration, setRegistration] = useState("");
+  const accounts = useQuery({ queryKey: ["company-accounts", scope.companyId], queryFn: () => apiPage<{ id: string; fullName: string; email: string }>(`v1/companies/${scope.companyId}/accounts`, { searchParams: { page: 1, pageSize: 100 } }) });
+  const save = useMutation({ mutationFn: () => { if (!accountId || !registration.trim()) throw new Error("Selecione a pessoa e informe o registro profissional."); return apiJson(`${base}/confined-space-technical-designations`, { method: "post", json: { accountId, professionalRegistration: registration.trim() } }); }, onSuccess: () => { setRegistration(""); sileo.success({ title: "Responsável técnico designado" }); }, onError: (error) => sileo.error({ title: error instanceof Error ? error.message : "Não foi possível designar o responsável" }) });
+  return <section className="content-section"><header className="section-header"><div><h2>Responsável técnico</h2><p>A pessoa designada precisa ter papel ativo na filial e é quem pode homologar revisões e publicações.</p></div></header><form className="form-stack" onSubmit={(event) => { event.preventDefault(); save.mutate(); }}><Field label="Pessoa"><Select required value={accountId} onChange={(event) => setAccountId(event.target.value)}><option value="">Selecione</option>{accounts.data?.rows.map((account) => <option value={account.id} key={account.id}>{account.fullName} · {account.email}</option>)}</Select></Field><Field label="Registro profissional"><Input required value={registration} onChange={(event) => setRegistration(event.target.value)} placeholder="Ex.: CREA 123456/D" /></Field><Button type="submit" loading={save.isPending}>Designar responsável</Button></form></section>;
+}
+
+function OperationalSurface({ tab, scope }: { tab: string; scope: Scope }) {
+  const content: Record<string, { title: string; description: string; Icon: typeof ClipboardList }> = {
+    "rescue-plans": { title: "Planos de resgate", description: "Acompanhe os planos e seus cenários por espaço confinado. A aprovação técnica será apresentada nesta área.", Icon: ClipboardList },
+    "technical-responsibles": { title: "Responsáveis técnicos", description: "Designe o responsável técnico da filial antes de aprovar cadastros, planos ou publicações.", Icon: ShieldCheck },
+    publications: { title: "Publicação QR", description: "Revise o recorte público aprovado antes de disponibilizá-lo pelo QR do espaço confinado.", Icon: FileCheck2 },
+  };
+  const item = content[tab] ?? content["rescue-plans"]!;
+  const Icon = item.Icon;
+  if (tab === "rescue-plans") return <RescuePlans scope={scope} />;
+  if (tab === "technical-responsibles") return <TechnicalResponsible scope={scope} />;
+  return <section className="confined-space-stage"><Icon aria-hidden="true" /><div><span className="workspace-eyebrow">Central de revisão</span><h2>{item.title}</h2><p>{item.description} A publicação é feita na revisão aprovada de cada EC, pela ação “Publicar recorte QR”.</p></div></section>;
+}
+
+export function ConfinedSpacesModule(props: Props) {
+  if (props.tab === "overview" || props.tab === "spaces") return <Overview {...props} />;
+  return <OperationalSurface tab={props.tab} scope={props.scope} />;
+}
