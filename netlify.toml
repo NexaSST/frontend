@@ -4,10 +4,10 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  API_ORIGIN = "https://api-homolog.nexasst.com.br"
 
-# TODO(NETLIFY): set production branch=main and enable develop branch deploys in UI.
-# Set API_ORIGIN in Netlify environment variables with branch/context scope:
-# main -> https://api.example.com; develop -> https://api-homolog.example.com.
+# Single shared AWS API for now. Production branch=main in Netlify.
+# Branch previews also use this API and share its database.
 # Never set DB_PASSWORD, SMTP_PASSWORD or AWS credentials in frontend variables.
 
 [[headers]]
