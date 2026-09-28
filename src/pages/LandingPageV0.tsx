@@ -3,6 +3,7 @@ import { SearchContent } from '../seo/SearchContent.js';
 import { siteTitle, siteDescription, siteUrl } from '../seo/content.js';
 
 const WHATSAPP_URL = 'https://wa.me/5542998366677?text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20uma%20demonstra%C3%A7%C3%A3o%20do%20NexaSST.';
+const WHATSAPP_PLANS_URL = 'https://wa.me/5542998366677?text=Ol%C3%A1%2C%20gostaria%20de%20conhecer%20os%20planos%20do%20NexaSST.';
 
 const risks = [
   ['01', 'Prazo vence sem aparecer na rotina', 'Treinamentos, inspeções e ações ficam espalhados até virarem urgência.'],
@@ -15,19 +16,19 @@ const preventionSteps = [
     index: '01',
     title: 'Detectar no campo',
     copy: 'A equipe registra a condição real do ativo e da tarefa, com contexto e evidência.',
-    image: '/illustrations/safety/safety-helmet.webp',
+    image: '/illustrations/safety/danger.webp',
   },
   {
     index: '02',
     title: 'Organizar o que exige ação',
     copy: 'Prazos, responsáveis e registros deixam de competir em planilhas e conversas soltas.',
-    image: '/illustrations/safety/reflective-vest.webp',
+    image: '/illustrations/safety/work-permit.webp',
   },
   {
     index: '03',
     title: 'Agir antes da ocorrência',
     copy: 'A gestão enxerga o que mudou e consegue priorizar o próximo movimento preventivo.',
-    image: '/illustrations/safety/fire-hose.webp',
+    image: '/illustrations/safety/work-order.webp',
   },
 ] as const;
 
@@ -101,16 +102,16 @@ const questions = [
   ['O sistema garante que a empresa não será multada?', 'Não. O NexaSST apoia prevenção, organização e rastreabilidade, mas não substitui as obrigações legais nem garante o resultado de uma fiscalização.'],
 ] as const;
 
-function WhatsAppButton({ compact = false }: { compact?: boolean }) {
+function WhatsAppButton({ compact = false, intent = 'demo', secondary = false }: { compact?: boolean; intent?: 'demo' | 'plans'; secondary?: boolean }) {
   return (
     <span className="landing-v0__cta-wrap">
       <a
-        className={compact ? 'landing-v0__cta landing-v0__cta--compact' : 'landing-v0__cta'}
-        href={WHATSAPP_URL}
+        className={`landing-v0__cta${compact ? ' landing-v0__cta--compact' : ''}${secondary ? ' landing-v0__cta--secondary' : ''}`}
+        href={intent === 'plans' ? WHATSAPP_PLANS_URL : WHATSAPP_URL}
         target="_blank"
         rel="noreferrer"
       >
-        Agendar demonstração
+        {intent === 'plans' ? 'Ver planos' : 'Agendar demonstração'}
       </a>
       {!compact && <small>Conversa direta pelo WhatsApp, sem formulário longo.</small>}
     </span>
@@ -191,7 +192,10 @@ export function LandingPageV0() {
             <span className="landing-v0__eyebrow">Prevenção ativa para segurança do trabalho</span>
             <h1>Risco visto cedo custa menos.</h1>
             <p>O NexaSST é um sistema de gestão de segurança do trabalho que transforma inspeções, treinamentos, APR e ergonomia em uma rotina contínua de prevenção, com prazos, evidências e decisões no mesmo fluxo.</p>
-            <WhatsAppButton />
+            <div className="landing-v0__hero-actions">
+              <WhatsAppButton compact />
+              <WhatsAppButton compact intent="plans" secondary />
+            </div>
             <span>Feito para a operação brasileira, no escritório e no campo, mesmo quando a internet falha.</span>
           </div>
         </section>
@@ -225,6 +229,10 @@ export function LandingPageV0() {
                 <p>{step.copy}</p>
               </article>
             ))}
+          </div>
+          <div className="landing-v0__prevention-action" data-reveal>
+            <p>Veja essa rotina aplicada à sua operação.</p>
+            <WhatsAppButton compact />
           </div>
         </section>
 
@@ -292,6 +300,9 @@ export function LandingPageV0() {
                 <p>{copy}</p>
               </article>
             ))}
+            <div className="landing-v0__solutions-action" data-reveal>
+              <WhatsAppButton compact intent="plans" />
+            </div>
           </div>
         </section>
 
