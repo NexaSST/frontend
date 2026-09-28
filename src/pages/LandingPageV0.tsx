@@ -37,6 +37,7 @@ const outcomes = [
   ['Treinamentos', 'Matrizes, validade e evidências visíveis antes que a capacitação vire uma lacuna.'],
   ['APR e Permissão de Trabalho', 'Risco analisado e autorização ligados à tarefa que realmente será executada.'],
   ['Ergonomia', 'AEP, AET e ações organizadas para acompanhar o que precisa mudar.'],
+  ['Inventário de espaços confinados', 'Cadastros, planos de resgate e responsáveis técnicos organizados por espaço, com identificação por QR Code.'],
 ] as const;
 
 type ComparisonState = 'native' | 'partial' | 'none' | 'integration' | 'project';
@@ -355,7 +356,7 @@ export function LandingPageV0() {
               <span className="landing-v0__eyebrow">Combos do ecossistema</span>
               <h2 id="pricing-title">Uma base proporcional ao tamanho da operação.</h2>
             </div>
-            <p>Os combos reúnem os quatro módulos. A composição avulsa continua disponível para necessidades específicas.</p>
+            <p>Os combos reúnem inspeções, treinamentos, APR/PT e ergonomia. O Inventário de Espaços Confinados é contratado à parte; os módulos também podem ser escolhidos individualmente.</p>
           </header>
           <div className="landing-v0__pricing-grid">
             {combos.map((combo) => (
