@@ -8,5 +8,5 @@ if (origin.protocol !== 'https:' || origin.username || origin.password || origin
   throw new Error('API_ORIGIN must be an HTTPS origin without credentials, path or query');
 }
 await mkdir('dist', { recursive: true });
-await writeFile('dist/_redirects', `/v1/* ${origin.origin}/v1/:splat 200!\n/apresentacao / 301\n/guias/* /404.html 404\n/* /app.html 200\n`);
+await writeFile('dist/_redirects', `/v1/* ${origin.origin}/v1/:splat 200!\n/apresentacao / 301\n/guias/* /404.html 404\n/privacidade/* /404.html 404\n/termos-de-uso/* /404.html 404\n/* /app.html 200\n`);
 console.log('Netlify API proxy and SPA fallback generated.');

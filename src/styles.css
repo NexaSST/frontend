@@ -1532,3 +1532,14 @@ h2 { margin-bottom: 0.4rem; font-size: 1.2rem; letter-spacing: -0.02em; }
 .search-article ul { padding-left: 24px; list-style: disc; }
 .search-article .search-answer { font-size: 21px; }
 .search-article .landing-v0__cta { display: inline-flex; margin-top: 24px; }
+
+.search-article ol { padding-left: 24px; list-style: decimal; }
+
+.legal-article__date { color: var(--landing-muted); font-size: 15px !important; }
+.legal-article article section p + p { margin-top: 16px; }
+.legal-article article section li + li { margin-top: 12px; }
+.legal-article article section ul { margin-top: 16px; }
+.landing-v0:has(.legal-article) .landing-v0__header { position: relative; top: auto; margin-top: 24px; grid-template-columns: 1fr auto; }
+.landing-v0:has(.legal-article) .landing-v0__header nav { display: flex; align-items: center; gap: 20px; }
+.landing-v0:has(.legal-article) .legal-article { padding-top: 40px; }
+@media (max-width: 620px) { .landing-v0:has(.legal-article) .landing-v0__header { border-radius: 20px; } .landing-v0:has(.legal-article) .landing-v0__header nav { gap: 10px; } .landing-v0:has(.legal-article) .landing-v0__header nav a { font-size: 12px; } }

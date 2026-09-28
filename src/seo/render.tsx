@@ -9,6 +9,8 @@ export function renderGuide(guide: Guide) {
   return renderToStaticMarkup(<div className="landing-v0"><header className="landing-v0__header"><a className="landing-v0__brand" href="/">NexaSST</a><a href="/#guias">Todos os guias</a></header>
     <main className="search-article"><nav aria-label="Caminho da página"><a href="/">Início</a> / <a href="/#guias">Guias</a></nav>
       <article><h1>{guide.title}</h1><p className="search-answer">{guide.answer}</p>{guide.sections.map(([title, text]) => <section key={title}><h2>{title}</h2><p>{text}</p></section>)}
+        {guide.faq && <section><h2>{guide.faq[0]}</h2><p>{guide.faq[1]}</p></section>}
+        {guide.steps && <section><h2>Passo a passo para organizar os registros</h2><ol>{guide.steps.map((step) => <li key={step}>{step}</li>)}</ol></section>}
         <h2>Roteiro para organizar a rotina</h2><ul>{guide.checklist.map((item) => <li key={item}>{item}</li>)}</ul>
         {guide.source && <p>Referência: <a href={guide.source[1]}>{guide.source[0]}</a>.</p>}
         <p>Conteúdo da equipe NexaSST · Atualizado em 27/09/2026.</p>
@@ -18,11 +20,12 @@ export function renderGuide(guide: Guide) {
     </main>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@graph': [
       { '@type': 'Article', headline: guide.title, description: guide.description, url, inLanguage: 'pt-BR', dateModified: '2026-09-27', author: { '@type': 'Organization', name: 'NexaSST', url: siteUrl }, publisher: { '@type': 'Organization', name: 'NexaSST', url: siteUrl } },
+      ...(guide.faq ? [{ '@type': 'FAQPage', mainEntity: [{ '@type': 'Question', name: guide.faq[0], acceptedAnswer: { '@type': 'Answer', text: guide.faq[1] } }] }] : []),
       { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'NexaSST', item: `${siteUrl}/` }, { '@type': 'ListItem', position: 2, name: guide.title, item: url }] },
     ] }).replace(/</g, '\\u003c') }} />
   </div>);
 }
 export function guideMarkdown(guide: Guide) {
-  return `# ${guide.title}\n\nURL canônica: ${siteUrl}/guias/${guide.slug}/\n\n${guide.answer}\n\n${guide.sections.map(([title, text]) => `## ${title}\n\n${text}`).join('\n\n')}\n\n## Roteiro para organizar a rotina\n\n${guide.checklist.map((item) => `- ${item}`).join('\n')}${guide.source ? `\n\nReferência: [${guide.source[0]}](${guide.source[1]})` : ''}\n\nEquipe NexaSST. Atualizado em 27/09/2026.\n\n[Demonstração](${demoUrl})\n`;
+  return `# ${guide.title}\n\nURL canônica: ${siteUrl}/guias/${guide.slug}/\n\n${guide.answer}\n\n${guide.sections.map(([title, text]) => `## ${title}\n\n${text}`).join('\n\n')}${guide.faq ? `\n\n## ${guide.faq[0]}\n\n${guide.faq[1]}` : ''}${guide.steps ? `\n\n## Passo a passo para organizar os registros\n\n${guide.steps.map((step, index) => `${index + 1}. ${step}`).join('\n')}` : ''}\n\n## Roteiro para organizar a rotina\n\n${guide.checklist.map((item) => `- ${item}`).join('\n')}${guide.source ? `\n\nReferência: [${guide.source[0]}](${guide.source[1]})` : ''}\n\nEquipe NexaSST. Atualizado em 27/09/2026.\n\n[Demonstração](${demoUrl})\n\n## Continue a leitura\n\n${guides.filter((item) => item.slug !== guide.slug).map((item) => `- [${item.title}](${siteUrl}/guias/${item.slug}/)`).join('\n')}\n`;
 }
 export const markdownIntro = `# NexaSST — gestão de segurança do trabalho\n\nURL canônica: ${siteUrl}/\n\n${siteDescription}\n\nPúblico: profissionais e equipes de SST de empresas brasileiras.\n\n`;
