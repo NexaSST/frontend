@@ -611,6 +611,7 @@ h2 { margin-bottom: 0.4rem; font-size: 1.2rem; letter-spacing: -0.02em; }
   .landing-v0__comparison > header { grid-template-columns: 1fr; }
   .landing-v0__comparison > header > div, .landing-v0__comparison > header > p { grid-column: 1; }
   .landing-v0__comparison > header > p { margin-top: 8px; }
+  .landing-v0__comparison tbody th { position: static; }
   .landing-v0__comparison > footer { grid-template-columns: 1fr; }
   .landing-v0__comparison > footer > p { text-align: left; }
   .landing-v0__pricing-grid { grid-template-columns: 1fr; }
