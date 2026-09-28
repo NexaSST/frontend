@@ -52,12 +52,11 @@ const comparisonRows: ReadonlyArray<{
   { feature: 'Emissão digital de APR e Permissão de Trabalho', nexa: 'native', a: 'none', b: 'native', c: 'none' },
   { feature: 'Análise ergonômica AEP/AET — NR-17', nexa: 'native', a: 'partial', b: 'none', c: 'none' },
   { feature: 'Inspeções digitais e checklists', nexa: 'native', a: 'partial', b: 'native', c: 'native' },
-  { feature: 'Trava preventiva antes da tarefa', nexa: 'integration', a: 'none', b: 'none', c: 'none', emphasis: true },
+  { feature: 'Trava preventiva antes da tarefa', nexa: 'project', a: 'none', b: 'none', c: 'none', emphasis: true },
   { feature: 'Validação de capacitação em portaria ou catraca', nexa: 'integration', a: 'none', b: 'none', c: 'none' },
   { feature: 'Perfil público e leitura rápida por QR Code', nexa: 'native', a: 'partial', b: 'partial', c: 'native' },
   { feature: 'Evidência com data/hora e captura pela câmera', nexa: 'native', a: 'partial', b: 'native', c: 'native' },
   { feature: 'Conectividade MCP com agentes de IA', nexa: 'project', a: 'none', b: 'none', c: 'none' },
-  { feature: 'Locação de dispositivos e logística reversa — DaaS', nexa: 'project', a: 'none', b: 'none', c: 'none' },
 ];
 
 const comparisonLabels: Record<ComparisonState, { short: string; label: string }> = {
@@ -359,7 +358,7 @@ export function LandingPageV0() {
               </article>
             ))}
           </div>
-          <p className="landing-v0__pricing-note">Trava pré tarefa para APR e PT disponível sob orçamento e integração.</p>
+          <p className="landing-v0__pricing-note">Trava preventiva para APR e PT: oferta sob projeto e orçamento.</p>
         </section>
 
         <section className="landing-v0__faq" aria-labelledby="faq-title">
@@ -396,7 +395,7 @@ export function LandingPageV0() {
           <span>NexaSST</span>
         </a>
         <p>Prevenção ativa com operação rastreável. <a href="/index.md">NexaSST em Markdown</a> · <a href="/llms.txt">Índice para IA</a></p>
-        <div><span>Política de privacidade pendente</span><span>Termos de uso pendentes</span></div>
+        <div><a href="/privacidade/">Política de Privacidade</a><a href="/termos-de-uso/">Termos e Condições de Uso</a></div>
       </footer>
     </div>
   );

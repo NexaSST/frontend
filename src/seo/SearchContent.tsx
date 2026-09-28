@@ -8,8 +8,11 @@ export function SearchContent() {
     </section>
     <section className="landing-v0__faq" aria-labelledby="search-title">
       <div><span className="landing-v0__eyebrow">Dúvidas sobre a rotina de SST</span><h2 id="search-title">Treinamentos, inspeções e riscos: por onde começar?</h2></div>
-      <div>{searchQuestions.map(([question, answer]) => <details key={question}><summary>{question}</summary><p>{answer}</p></details>)}
-        <p className="search-sources">Fontes oficiais: <a href={sources.cbo}>CBO do MTE</a>, <a href={sources.nr17}>NR-17</a>, <a href={sources.nr33}>NR-33</a> e <a href={sources.transpetro}>Canal do Fornecedor da Transpetro</a>.</p>
+      <div>{searchQuestions.map(([question, answer]) => {
+        const guide = guides.find((item) => item.faq?.[0] === question);
+        return <details key={question}><summary>{question}</summary><p>{answer}</p>{guide && <p><a href={`/guias/${guide.slug}/`}>Veja o guia completo</a></p>}</details>;
+      })}
+        <p className="search-sources">Fontes oficiais: <a href={sources.cbo}>CBO do MTE</a>, <a href={sources.nr17}>NR-17</a> e <a href={sources.nr33}>NR-33</a>.</p>
       </div>
     </section>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@graph': [

@@ -4,6 +4,7 @@ import { JSDOM } from 'jsdom';
 const server = await createServer({ server: { middlewareMode: true, hmr: false, watch: null }, appType: 'custom' });
 try {
   const c = await server.ssrLoadModule('/src/seo/render.tsx');
+  const legal = await server.ssrLoadModule('/src/seo/legalRender.tsx');
   const template = await readFile('dist/index.html', 'utf8');
   await writeFile('dist/app.html', template);
   const escape = (s) => s.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;');
@@ -61,12 +62,20 @@ try {
     paths.push(path);
     headers.push(`${path}\n  Link: <${path}index.md>; rel="alternate"; type="text/markdown"`, `${path}index.md\n  Content-Type: text/markdown; charset=UTF-8\n  X-Robots-Tag: noindex\n  Link: <${c.siteUrl}${path}>; rel="canonical"`);
   }
+  for (const legalPage of legal.legalPages) {
+    const path = `/${legalPage.slug}/`;
+    await mkdir(`dist${path}`, { recursive: true });
+    await writeFile(`dist${path}index.html`, page(`${legalPage.title} | NexaSST`, legalPage.description, path, legal.renderLegal(legalPage), true));
+    await writeFile(`dist${path}index.md`, legal.legalMarkdown(legalPage));
+    paths.push(path);
+    headers.push(`${path}\n  Link: <${path}index.md>; rel="alternate"; type="text/markdown"`, `${path}index.md\n  Content-Type: text/markdown; charset=UTF-8\n  X-Robots-Tag: noindex\n  Link: <${c.siteUrl}${path}>; rel="canonical"`);
+  }
   await writeFile('dist/404.html', '<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="robots" content="noindex"><title>Página não encontrada | NexaSST</title><h1>Página não encontrada</h1><a href="/">Voltar ao NexaSST</a></html>');
   await writeFile('dist/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${paths.map((p) => `  <url><loc>${c.siteUrl}${p}</loc><lastmod>2026-09-27</lastmod></url>`).join('\n')}\n</urlset>\n`);
   const preview = process.env.CONTEXT && process.env.CONTEXT !== 'production';
   await writeFile('dist/robots.txt', preview ? 'User-agent: *\nDisallow: /\n' : `User-agent: *\nAllow: /\n\nSitemap: ${c.siteUrl}/sitemap.xml\n`);
   if (preview) headers.push('/*\n  X-Robots-Tag: noindex');
   await writeFile('dist/_headers', `${headers.join('\n\n')}\n`);
-  await writeFile('dist/llms.txt', `# NexaSST\n\n> Sistema independente para equipes brasileiras de segurança do trabalho: gestão de treinamentos, inspeções e APR.\n\n## Páginas oficiais\n\n- [Landing](${c.siteUrl}/): produto, planos e contato.\n- [Landing em Markdown](${c.siteUrl}/index.md): versão textual da landing.\n${c.guides.map((g) => `- [${g.title}](${c.siteUrl}/guias/${g.slug}/index.md): ${g.description}`).join('\n')}\n\n## Limites da oferta\n\nDecisões técnicas continuam com os profissionais responsáveis. Não há vínculo com Transpetro, MTE ou SGG-SST declarado no site. Confirmar ergonomia, integrações e recursos sob projeto em demonstração. Não há garantia de conformidade ou resultado de fiscalização.\n\n[Agendar demonstração](${c.siteUrl}/#planos)\n`);
-  console.log(`Search pages generated: homepage, ${c.guides.length} guides, Markdown, sitemap and headers.`);
+  await writeFile('dist/llms.txt', `# NexaSST\n\n> Sistema independente para equipes brasileiras de segurança do trabalho: gestão de treinamentos, inspeções e APR.\n\n## Páginas oficiais\n\n- [Landing](${c.siteUrl}/): produto, planos e contato.\n- [Landing em Markdown](${c.siteUrl}/index.md): versão textual da landing.\n${c.guides.map((g) => `- [${g.title}](${c.siteUrl}/guias/${g.slug}/index.md): ${g.description}`).join('\n')}\n- [Política de Privacidade](${c.siteUrl}/privacidade/): tratamento de dados no site, web e aplicativo.\n- [Termos e Condições de Uso](${c.siteUrl}/termos-de-uso/): condições de uso do serviço.\n\n## Limites da oferta\n\nDecisões técnicas continuam com os profissionais responsáveis. Não há vínculo com Transpetro, MTE ou SGG-SST declarado no site. Confirmar ergonomia, integrações e recursos sob projeto em demonstração. Não há garantia de conformidade ou resultado de fiscalização.\n\n[Agendar demonstração](${c.siteUrl}/#planos)\n`);
+  console.log(`Search pages generated: homepage, ${c.guides.length} guides, ${legal.legalPages.length} legal pages, Markdown, sitemap and headers.`);
 } finally { await server.close(); }

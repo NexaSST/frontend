@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { JSDOM } from 'jsdom';
 const sitemap = await readFile('dist/sitemap.xml', 'utf8');
 const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => new URL(match[1]));
-assert.equal(urls.length, 7);
+assert.equal(urls.length, 9);
 for (const url of urls) {
   const dom = new JSDOM(await readFile(`dist${url.pathname}index.html`, 'utf8'));
   const doc = dom.window.document;
@@ -24,6 +24,24 @@ for (const url of urls) {
   const markdown = await readFile(`dist${url.pathname}index.md`, 'utf8');
   assert.ok(markdown.includes(url.href));
   assert.ok(markdown.length > 1000);
+  if (url.pathname.startsWith('/guias/')) {
+    for (const element of doc.querySelectorAll('article h1, article section p, article ol li')) {
+      assert.ok(markdown.includes(element.textContent), `HTML/Markdown content mismatch: ${url.pathname}`);
+    }
+    const graph = [...doc.querySelectorAll('script[type="application/ld+json"]')].flatMap((script) => JSON.parse(script.textContent)['@graph']);
+    const guideFaq = graph.find((item) => item['@type'] === 'FAQPage');
+    for (const question of guideFaq?.mainEntity ?? []) {
+      assert.ok(doc.querySelector('article').textContent.includes(question.name));
+      assert.ok(doc.querySelector('article').textContent.includes(question.acceptedAnswer.text));
+      assert.ok(markdown.includes(question.acceptedAnswer.text));
+    }
+  }
+  if (['/privacidade/', '/termos-de-uso/'].includes(url.pathname)) {
+    for (const element of doc.querySelectorAll('article h1, article section h2, article section p, article section li')) {
+      assert.ok(markdown.includes(element.textContent), `Legal HTML/Markdown mismatch: ${url.pathname}`);
+    }
+    assert.match(doc.querySelector('article').textContent, /padilha\.matheus@hotmail\.com/);
+  }
   dom.window.close();
 }
 const home = new JSDOM(await readFile('dist/index.html', 'utf8'));
