@@ -1,6 +1,6 @@
 export const siteUrl = 'https://nexasst.com.br';
 export const siteTitle = 'Gestão de treinamentos e inspeções de SST | NexaSST';
-export const siteDescription = 'Organize treinamentos de segurança do trabalho, inspeções de extintores, APR e evidências com o NexaSST. Agende uma demonstração.';
+export const siteDescription = 'Organize treinamentos, inspeções, APR/PT, ergonomia e inventário de espaços confinados com QR Code no NexaSST. Agende uma demonstração.';
 export const demoUrl = 'https://wa.me/5542998366677?text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20uma%20demonstra%C3%A7%C3%A3o%20do%20NexaSST.';
 const nrBase = 'https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/';
 export const sources = {

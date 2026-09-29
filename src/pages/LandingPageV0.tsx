@@ -4,6 +4,7 @@ import { siteTitle, siteDescription, siteUrl } from '../seo/content.js';
 
 const WHATSAPP_URL = 'https://wa.me/5542998366677?text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20uma%20demonstra%C3%A7%C3%A3o%20do%20NexaSST.';
 const WHATSAPP_PLANS_URL = 'https://wa.me/5542998366677?text=Ol%C3%A1%2C%20gostaria%20de%20conhecer%20os%20planos%20do%20NexaSST.';
+const WHATSAPP_CONFINED_SPACES_URL = 'https://wa.me/5542998366677?text=Ol%C3%A1%2C%20gostaria%20de%20uma%20proposta%20para%20o%20Invent%C3%A1rio%20de%20Espa%C3%A7os%20Confinados%20do%20NexaSST.';
 
 const risks = [
   ['01', 'Prazo vence sem aparecer na rotina', 'Treinamentos, inspeções e ações ficam espalhados até virarem urgência.'],
@@ -103,16 +104,21 @@ const questions = [
   ['O sistema garante que a empresa não será multada?', 'Não. O NexaSST apoia prevenção, organização e rastreabilidade, mas não substitui as obrigações legais nem garante o resultado de uma fiscalização.'],
 ] as const;
 
-function WhatsAppButton({ compact = false, intent = 'demo', secondary = false }: { compact?: boolean; intent?: 'demo' | 'plans'; secondary?: boolean }) {
+function WhatsAppButton({ compact = false, intent = 'demo', secondary = false }: { compact?: boolean; intent?: 'demo' | 'plans' | 'confined-spaces'; secondary?: boolean }) {
+  const action = intent === 'plans'
+    ? { href: WHATSAPP_PLANS_URL, label: 'Ver planos' }
+    : intent === 'confined-spaces'
+      ? { href: WHATSAPP_CONFINED_SPACES_URL, label: 'Solicitar proposta' }
+      : { href: WHATSAPP_URL, label: 'Agendar demonstração' };
   return (
     <span className="landing-v0__cta-wrap">
       <a
         className={`landing-v0__cta${compact ? ' landing-v0__cta--compact' : ''}${secondary ? ' landing-v0__cta--secondary' : ''}`}
-        href={intent === 'plans' ? WHATSAPP_PLANS_URL : WHATSAPP_URL}
+        href={action.href}
         target="_blank"
         rel="noreferrer"
       >
-        {intent === 'plans' ? 'Ver planos' : 'Agendar demonstração'}
+        {action.label}
       </a>
       {!compact && <small>Conversa direta pelo WhatsApp, sem formulário longo.</small>}
     </span>
@@ -192,7 +198,7 @@ export function LandingPageV0() {
           <div className="landing-v0__hero-content" data-reveal="hero">
             <span className="landing-v0__eyebrow">Prevenção ativa para segurança do trabalho</span>
             <h1>Risco visto cedo custa menos.</h1>
-            <p>O NexaSST é um sistema de gestão de segurança do trabalho que transforma inspeções, treinamentos, APR e ergonomia em uma rotina contínua de prevenção, com prazos, evidências e decisões no mesmo fluxo.</p>
+            <p>O NexaSST reúne inspeções, treinamentos, APR/PT, ergonomia e inventário de espaços confinados em uma rotina de prevenção com prazos, evidências e decisões conectadas.</p>
             <div className="landing-v0__hero-actions">
               <WhatsAppButton compact />
               <WhatsAppButton compact intent="plans" secondary />
@@ -263,8 +269,8 @@ export function LandingPageV0() {
           <div className="landing-v0__qr-copy">
             <div data-reveal>
               <span className="landing-v0__eyebrow">Rastreabilidade por QR Code</span>
-              <h2 id="qr-title">A evidência começa ligada à pessoa e ao ativo certos.</h2>
-              <p>O QR Code reduz a distância entre o que existe no campo e o que aparece na gestão. Cada leitura abre o contexto correto para registrar, consultar e acompanhar.</p>
+              <h2 id="qr-title">A evidência começa ligada à pessoa, ao ativo e ao espaço certos.</h2>
+              <p>O QR Code reduz a distância entre o campo e a gestão. Cada leitura abre o contexto correto para consultar informações publicadas e acompanhar a operação.</p>
             </div>
             <div className="landing-v0__qr-cases">
               <article data-reveal>
@@ -275,6 +281,10 @@ export function LandingPageV0() {
                 <img src="/illustrations/safety/work-order.webp" alt="" />
                 <div><span>Inspeções</span><h3>Rastreie o ativo</h3><p>Acesse o equipamento certo e preserve histórico, fotos e recorrências.</p></div>
               </article>
+              <article data-reveal>
+                <img src="/illustrations/safety/rope.webp" alt="" />
+                <div><span>Espaços confinados</span><h3>Consulte o espaço</h3><p>Cada espaço tem QR próprio para consultar informações e o recorte público aprovado do plano de resgate, quando disponível.</p></div>
+              </article>
             </div>
           </div>
         </section>
@@ -284,7 +294,6 @@ export function LandingPageV0() {
           <div data-reveal>
             <h2 id="finance-title">A multa é só uma das formas de pagar por um risco percebido tarde.</h2>
             <p>Parada, retrabalho, treinamento emergencial, investigação e evidência dispersa também consomem a operação. O NexaSST ajuda a agir antes e a manter rastreabilidade do que foi identificado e executado.</p>
-            <a href="https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/pgr" target="_blank" rel="noreferrer">Entender a base oficial do PGR</a>
           </div>
         </section>
 
@@ -369,6 +378,17 @@ export function LandingPageV0() {
                 <WhatsAppButton compact />
               </article>
             ))}
+          </div>
+          <div className="landing-v0__module-offer" data-reveal>
+            <div>
+              <span className="landing-v0__eyebrow">Módulo contratado à parte</span>
+              <h3>Inventário de espaços confinados</h3>
+              <p>Organize espaços, planos de resgate e publicação por QR Code. Converse com a equipe para definir o escopo e receber uma proposta para sua operação.</p>
+            </div>
+            <div className="landing-v0__module-offer-action">
+              <strong>Valor sob consulta</strong>
+              <WhatsAppButton compact intent="confined-spaces" />
+            </div>
           </div>
           <p className="landing-v0__pricing-note">Trava preventiva para APR e PT: oferta sob projeto e orçamento.</p>
         </section>
