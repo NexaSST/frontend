@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { OfferGuide } from '../features/landing/OfferGuide.js';
 import { SearchContent } from '../seo/SearchContent.js';
 import { siteTitle, siteDescription, siteUrl } from '../seo/content.js';
 
@@ -37,62 +38,53 @@ const outcomes = [
   ['Inspeções digitais', 'Ativos, checklists, fotos e vencimentos conectados ao trabalho de campo.'],
   ['Treinamentos', 'Matrizes, validade e evidências visíveis antes que a capacitação vire uma lacuna.'],
   ['APR e Permissão de Trabalho', 'Risco analisado e autorização ligados à tarefa que realmente será executada.'],
-  ['Ergonomia', 'AEP, AET e ações organizadas para acompanhar o que precisa mudar.'],
   ['Inventário de espaços confinados', 'Cadastros, planos de resgate e responsáveis técnicos organizados por espaço, com identificação por QR Code.'],
 ] as const;
 
-type ComparisonState = 'native' | 'partial' | 'none' | 'integration' | 'project';
-
-const comparisonRows: ReadonlyArray<{
-  feature: string;
-  nexa: ComparisonState;
-  a: ComparisonState;
-  b: ComparisonState;
-  c: ComparisonState;
-  emphasis?: boolean;
-}> = [
-  { feature: 'Matriz de treinamentos por colaborador e NRs', nexa: 'native', a: 'native', b: 'none', c: 'none' },
-  { feature: 'Emissão digital de APR e Permissão de Trabalho', nexa: 'native', a: 'none', b: 'native', c: 'none' },
-  { feature: 'Análise ergonômica AEP/AET — NR-17', nexa: 'native', a: 'partial', b: 'none', c: 'none' },
-  { feature: 'Inspeções digitais e checklists', nexa: 'native', a: 'partial', b: 'native', c: 'native' },
-  { feature: 'Trava preventiva antes da tarefa', nexa: 'project', a: 'none', b: 'none', c: 'none', emphasis: true },
-  { feature: 'Validação de capacitação em portaria ou catraca', nexa: 'integration', a: 'none', b: 'none', c: 'none' },
-  { feature: 'Perfil público e leitura rápida por QR Code', nexa: 'native', a: 'partial', b: 'partial', c: 'native' },
-  { feature: 'Evidência com data/hora e captura pela câmera', nexa: 'native', a: 'partial', b: 'native', c: 'native' },
-  { feature: 'Conectividade MCP com agentes de IA', nexa: 'project', a: 'none', b: 'none', c: 'none' },
-];
-
-const comparisonLabels: Record<ComparisonState, { short: string; label: string }> = {
-  native: { short: '✓', label: 'Completo ou nativo' },
-  partial: { short: '◐', label: 'Parcial ou documental' },
-  none: { short: '—', label: 'Não oferecido' },
-  integration: { short: '+', label: 'Disponível por integração' },
-  project: { short: '○', label: 'Oferta sob projeto' },
-};
+const operationalDifferences = [
+  {
+    situation: 'Prazo que vira urgência',
+    without: 'Vencimentos ficam dispersos até alguém descobrir a pendência.',
+    with: 'A equipe consulta obrigações e inspeções com prazo no contexto da filial e prioriza o que exige atenção.',
+    proof: 'Matriz de treinamentos, vencimentos e painel de pontos de atenção.',
+  },
+  {
+    situation: 'Evidência difícil de recuperar',
+    without: 'Fotos e registros ficam longe da pessoa, do ativo ou da tarefa a que pertencem.',
+    with: 'A evidência permanece associada ao registro de treinamento, à inspeção ou à revisão da APR.',
+    proof: 'Histórico operacional, anexos e registros vinculados.',
+  },
+  {
+    situation: 'Campo e gestão em tempos diferentes',
+    without: 'O trabalho no campo termina antes de a gestão enxergar o que precisa acompanhar.',
+    with: 'O aplicativo preserva inspeções durante a falta de conexão e mostra o estado da sincronização até a confirmação.',
+    proof: 'Aplicativo de inspeções e painel web em execução.',
+  },
+] as const;
 
 const combos = [
   {
     name: 'Starter',
-    audience: 'Pequenas operações',
+    audience: 'Para estruturar uma rotina compacta de SST',
     price: 'R$ 1.690',
     oldPrice: 'R$ 2.260',
-    items: ['50 colaboradores', '2 inspetores e 100 ativos', '50 emissões de APR ou PT', '5 laudos de ergonomia'],
+    items: ['Treinamentos para até 50 colaboradores', 'Inspeções com até 2 inspetores e 100 ativos', 'Até 50 emissões de APR ou PT por mês', 'Ergonomia: 5 laudos por mês, em breve'],
     featured: false,
   },
   {
     name: 'Growth',
-    audience: 'Operações médias',
+    audience: 'Para acompanhar mais equipes e frentes de trabalho',
     price: 'R$ 3.890',
     oldPrice: 'R$ 5.060',
-    items: ['150 colaboradores', '5 inspetores e 300 ativos', '200 emissões de APR ou PT', '15 laudos de ergonomia'],
+    items: ['Treinamentos para até 150 colaboradores', 'Inspeções com até 5 inspetores e 300 ativos', 'Até 200 emissões de APR ou PT por mês', 'Ergonomia: 15 laudos por mês, em breve'],
     featured: true,
   },
   {
     name: 'Scale',
-    audience: 'Indústrias e operações amplas',
+    audience: 'Para operações com maior volume em várias frentes',
     price: 'R$ 9.645',
     oldPrice: 'R$ 12.860',
-    items: ['500 colaboradores', '15 inspetores e 1.000 ativos', '500 emissões de APR ou PT', '30 laudos de ergonomia'],
+    items: ['Treinamentos para até 500 colaboradores', 'Inspeções com até 15 inspetores e 1.000 ativos', 'Até 500 emissões de APR ou PT por mês', 'Ergonomia: 30 laudos por mês, em breve'],
     featured: false,
   },
 ] as const;
@@ -121,16 +113,6 @@ function WhatsAppButton({ compact = false, intent = 'demo', secondary = false }:
         {action.label}
       </a>
       {!compact && <small>Conversa direta pelo WhatsApp, sem formulário longo.</small>}
-    </span>
-  );
-}
-
-function ComparisonStatus({ state }: { state: ComparisonState }) {
-  const status = comparisonLabels[state];
-  return (
-    <span className={`landing-v0__comparison-status landing-v0__comparison-status--${state}`} aria-label={status.label}>
-      <b aria-hidden="true">{status.short}</b>
-      <span>{status.label}</span>
     </span>
   );
 }
@@ -184,7 +166,8 @@ export function LandingPageV0() {
         <nav aria-label="Navegação principal">
           <a href="#prevencao">Prevenção ativa</a>
           <a href="#rastreabilidade">QR e rastreio</a>
-          <a href="#comparativo">Comparativo</a>
+          <a href="#comparativo">Na rotina</a>
+          <a href="#guia">Encontre seu caminho</a>
           <a href="#planos">Planos</a>
         </nav>
         <div className="landing-v0__header-actions">
@@ -198,7 +181,7 @@ export function LandingPageV0() {
           <div className="landing-v0__hero-content" data-reveal="hero">
             <span className="landing-v0__eyebrow">Prevenção ativa para segurança do trabalho</span>
             <h1>Risco visto cedo custa menos.</h1>
-            <p>O NexaSST reúne inspeções, treinamentos, APR/PT, ergonomia e inventário de espaços confinados em uma rotina de prevenção com prazos, evidências e decisões conectadas.</p>
+            <p>O NexaSST conecta inspeções, treinamentos, APR/PT e inventário de espaços confinados em uma rotina de prevenção com prazos, evidências e decisões no mesmo contexto.</p>
             <div className="landing-v0__hero-actions">
               <WhatsAppButton compact />
               <WhatsAppButton compact intent="plans" secondary />
@@ -319,45 +302,24 @@ export function LandingPageV0() {
         <section className="landing-v0__comparison" id="comparativo" aria-labelledby="comparison-title">
           <header data-reveal>
             <div>
-              <span className="landing-v0__eyebrow">Um ecossistema, não ferramentas isoladas</span>
-              <h2 id="comparison-title">Compare a cobertura operacional.</h2>
+              <span className="landing-v0__eyebrow">Da pendência à próxima ação</span>
+              <h2 id="comparison-title">O prazo não espera sua equipe encontrar a evidência.</h2>
             </div>
-            <p>O diferencial está em conectar capacitação, risco, tarefa, ativo e evidência. Recursos que dependem de integração ou projeto continuam indicados dessa forma.</p>
+            <p>Veja como três situações comuns mudam quando prazo, registro e responsável são consultados no mesmo fluxo.</p>
           </header>
-
-          <div className="landing-v0__comparison-shell" tabIndex={0} aria-label="Tabela comparativa; deslize horizontalmente em telas menores">
-            <table>
-              <caption className="sr-only">Comparação anonimizada entre abordagens de software de segurança do trabalho</caption>
-              <thead>
-                <tr>
-                  <th scope="col">Funcionalidade ou recurso</th>
-                  <th className="landing-v0__comparison-nexa" scope="col"><strong>NexaSST</strong><span>Ecossistema conectado</span></th>
-                  <th scope="col"><strong>Solução A</strong><span>Medicina e eSocial</span></th>
-                  <th scope="col"><strong>Solução B</strong><span>Risco e PT</span></th>
-                  <th scope="col"><strong>Solução C</strong><span>Checklists e incêndio</span></th>
-                </tr>
-              </thead>
-              <tbody>
-                {comparisonRows.map((row) => (
-                  <tr key={row.feature} className={row.emphasis ? 'landing-v0__comparison-emphasis' : undefined}>
-                    <th scope="row">{row.feature}</th>
-                    <td className="landing-v0__comparison-nexa"><ComparisonStatus state={row.nexa} /></td>
-                    <td><ComparisonStatus state={row.a} /></td>
-                    <td><ComparisonStatus state={row.b} /></td>
-                    <td><ComparisonStatus state={row.c} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="landing-v0__comparison-list">
+            <div className="landing-v0__comparison-labels" aria-hidden="true"><span>Situação recorrente</span><span>Quando os registros ficam soltos</span><span>Com o fluxo NexaSST</span></div>
+            {operationalDifferences.map((item, index) => (
+              <article key={item.situation} className={index === 0 ? 'landing-v0__comparison-row landing-v0__comparison-row--lead' : 'landing-v0__comparison-row'} data-reveal>
+                <h3>{item.situation}</h3>
+                <p>{item.without}</p>
+                <div><strong>{item.with}</strong><small>{item.proof}</small></div>
+              </article>
+            ))}
           </div>
-
-          <footer data-reveal>
-            <div className="landing-v0__comparison-legend" aria-label="Legenda">
-              {(['native', 'partial', 'integration', 'project', 'none'] as const).map((state) => <ComparisonStatus state={state} key={state} />)}
-            </div>
-            <p>Comparação de abordagens anonimizada para orientação comercial. A disponibilidade final varia conforme módulo, plano, integração e escopo contratado.</p>
-          </footer>
         </section>
+
+        <OfferGuide />
 
         <section className="landing-v0__pricing" id="planos" aria-labelledby="pricing-title">
           <header data-reveal>
@@ -365,20 +327,20 @@ export function LandingPageV0() {
               <span className="landing-v0__eyebrow">Combos do ecossistema</span>
               <h2 id="pricing-title">Uma base proporcional ao tamanho da operação.</h2>
             </div>
-            <p>Os combos reúnem inspeções, treinamentos, APR/PT e ergonomia. O Inventário de Espaços Confinados é contratado à parte; os módulos também podem ser escolhidos individualmente.</p>
+            <p>Starter, Growth e Scale reúnem as mesmas frentes com capacidades diferentes. Você também pode começar por módulos avulsos; o Inventário de Espaços Confinados tem proposta própria.</p>
           </header>
           <div className="landing-v0__pricing-grid">
             {combos.map((combo) => (
               <article className={combo.featured ? 'landing-v0__price landing-v0__price--featured' : 'landing-v0__price'} key={combo.name} data-reveal>
-                {combo.featured && <span className="landing-v0__price-badge">Recomendado para crescer</span>}
                 <p>{combo.audience}</p>
                 <h3>Combo {combo.name}</h3>
-                <div><del>{combo.oldPrice}</del><strong>{combo.price}</strong><span>por mês</span></div>
+                <div><span className="landing-v0__price-reference">Soma dos módulos avulsos <span className="landing-v0__price-struck">{combo.oldPrice}</span></span><strong>{combo.price}</strong><span>por mês</span></div>
                 <ul>{combo.items.map((item) => <li key={item}>{item}</li>)}</ul>
                 <WhatsAppButton compact />
               </article>
             ))}
           </div>
+          <p className="landing-v0__pricing-disclosure">A soma avulsa inclui ergonomia, que integra os combos e estará disponível em breve. A franquia mensal de laudos começa quando o módulo estiver disponível, sem acúmulo de meses anteriores.</p>
           <div className="landing-v0__module-offer" data-reveal>
             <div>
               <span className="landing-v0__eyebrow">Módulo contratado à parte</span>
