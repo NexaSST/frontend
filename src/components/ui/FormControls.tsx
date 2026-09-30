@@ -11,8 +11,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({ c
   return <input ref={ref} className={cx("ui-control", className)} aria-invalid={invalid || undefined} {...props} />;
 });
 
-export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> { invalid?: boolean }
-export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select({ className, invalid, children, value, defaultValue, disabled, onChange, onBlur, "aria-label": ariaLabel, ...props }, forwardedRef) {
+export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> { invalid?: boolean; menuClassName?: string }
+export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select({ className, menuClassName, invalid, children, value, defaultValue, disabled, onChange, onBlur, "aria-label": ariaLabel, ...props }, forwardedRef) {
   const fieldLabel = useContext(FieldLabelContext);
   const nativeRef = useRef<HTMLSelectElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -116,7 +116,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
       <div
         ref={menuRef}
         id={listboxId}
-        className="ui-select__menu"
+        className={cx("ui-select__menu", menuClassName)}
         role="listbox"
         aria-label={ariaLabel ?? fieldLabel ?? props.name ?? "Opções"}
         style={style}

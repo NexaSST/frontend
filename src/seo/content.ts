@@ -1,6 +1,6 @@
 export const siteUrl = 'https://nexasst.com.br';
 export const siteTitle = 'Gestão de treinamentos e inspeções de SST | NexaSST';
-export const siteDescription = 'Organize treinamentos de segurança do trabalho, inspeções de extintores, APR e evidências com o NexaSST. Agende uma demonstração.';
+export const siteDescription = 'Organize treinamentos, inspeções, APR/PT e inventário de espaços confinados com QR Code no NexaSST. Agende uma demonstração.';
 export const demoUrl = 'https://wa.me/5542998366677?text=Ol%C3%A1%2C%20gostaria%20de%20agendar%20uma%20demonstra%C3%A7%C3%A3o%20do%20NexaSST.';
 const nrBase = 'https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/';
 export const sources = {
@@ -75,7 +75,7 @@ export const guides: Guide[] = [
     sections: [
       ['Organize o contexto da avaliação', 'Associe os registros à atividade e ao local avaliados. Preserve o contexto observado e a identificação do responsável. Um documento isolado fica mais difícil de acompanhar quando a equipe não consegue relacioná-lo à situação de trabalho que motivou a avaliação.'],
       ['Acompanhe as ações depois do documento', 'Defina quem acompanha as ações propostas e mantenha as evidências de execução consultáveis. A decisão sobre a avaliação necessária e sua metodologia exige análise técnica; a ferramenta de gestão não substitui esse trabalho.'],
-      ['Confirme o escopo antes de contratar', 'A oferta comercial do NexaSST apresenta ergonomia, AEP e AET. Confirme em demonstração os recursos disponíveis, a implantação e o escopo da proposta antes de escolher um plano. Este guia não presume emissão automática de laudos nem atendimento integral à NR-17.'],
+      ['Confirme o escopo antes de contratar', 'Ergonomia está incluída comercialmente nos combos do NexaSST, com disponibilização em breve. A franquia de laudos começa quando o módulo estiver disponível, sem acúmulo de meses anteriores. Confirme o escopo da proposta antes de contratar; este guia não presume emissão automática de laudos nem atendimento integral à NR-17.'],
     ], steps: ['Identifique as situações de trabalho que precisam de avaliação.', 'Defina com a equipe técnica a avaliação e os registros aplicáveis.', 'Organize os documentos por atividade, local e responsável.', 'Acompanhe as ações propostas e suas evidências de execução.', 'Confirme em demonstração o escopo de ergonomia disponível na proposta do NexaSST.'], checklist: ['Identificar atividade e situação de trabalho.', 'Consultar a NR-17 vigente com a equipe técnica.', 'Relacionar avaliações às ações e responsáveis.', 'Confirmar recursos de ergonomia na demonstração.'], source: ['NR-17 — fonte oficial do MTE', sources.nr17],
   },
 ];
