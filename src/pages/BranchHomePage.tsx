@@ -1,3 +1,6 @@
+import { cx } from '../components/ui/utils.js';
+import { BranchModuleStart, moduleStart } from '../components/BranchModuleStart.js';
+import { OperationalChart } from '../components/OperationalChart.js';
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
@@ -10,7 +13,6 @@ import {
   Clock3,
   GraduationCap,
   MapPin,
-  Network,
   RefreshCw,
   ScrollText,
   ShieldAlert,
@@ -27,6 +29,19 @@ import {
   type CompanySession,
 } from "../lib/session.js";
 import { branchRoute } from "../router.js";
+
+const branchDashboardMetricClasses = {
+  "neutral": "",
+  "success": "[&_strong]:text-accent",
+  "warning": "[&_strong]:text-[#8a6110]",
+  "danger": "[&_strong]:text-danger",
+};
+
+const branchPrioritySignalClasses = {
+  "danger": "bg-[#ef9b91]",
+  "warning": "bg-[#f0c45e]",
+  "info": "bg-[#b4d6e3]",
+};
 
 type PeriodDays = 30 | 90 | 180 | 365;
 type DashboardDomain = "training" | "inspections" | "apr";
@@ -157,7 +172,7 @@ function Metric({
 }) {
   return (
     <div
-      className={`branch-dashboard__metric branch-dashboard__metric--${tone}`}
+      className={cx("grid grid-cols-[auto_minmax(0,1fr)] gap-[.75rem] min-w-0 p-[1rem_1.1rem] border-l border-solid border-l-line first:border-l-0 [&_>_span]:grid [&_>_span]:place-items-center [&_>_span]:w-[2.1rem] [&_>_span]:h-[2.1rem] [&_>_span]:rounded-[.65rem] [&_>_span]:text-accent-strong [&_>_span]:bg-[#e6eee9] [&_small]:block [&_small]:min-h-[2.1em] [&_small]:text-muted [&_small]:text-[.72rem] [&_small]:font-extrabold [&_small]:leading-[1.15] [&_strong]:block [&_strong]:m-[.12rem_0_.2rem] [&_strong]:text-[1.85rem] [&_strong]:leading-none [&_strong]:tracking-[-.03em] [&_strong]:tabular-nums [&_p]:overflow-hidden [&_p]:text-muted [&_p]:text-[.7rem] [&_p]:leading-[1.35] [&_p]:text-ellipsis max-[520px]:border-0 max-[520px]:border-t max-[520px]:border-solid max-[520px]:border-t-line max-[520px]:first:border-t-0 max-[520px]:[&_small]:text-[.875rem] max-[520px]:[&_p]:text-[.875rem]", branchDashboardMetricClasses[tone])}
     >
       <span>{icon}</span>
       <div>
@@ -184,7 +199,7 @@ function PriorityItem({
   const body = (
     <>
       <span
-        className={`branch-priority__signal branch-priority__signal--${item.severity}`}
+        className={cx("grid place-items-center w-[1.9rem] h-[1.9rem] rounded-[.55rem] text-[#13251f]", branchPrioritySignalClasses[item.severity])}
       >
         <ShieldAlert size={15} />
       </span>
@@ -202,7 +217,7 @@ function PriorityItem({
   );
   return actionable ? (
     <Link
-      className="branch-priority"
+      className={"branch-priority grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-[.7rem] min-h-15 p-[.7rem_1rem] text-inherit border-t border-solid border-t-[rgb(255_255_255/11%)] no-underline [&:hover]:bg-[rgb(255_255_255/6%)] focus-visible:[outline:3px_solid_#78bda2] focus-visible:outline-offset-[-3px] [&_>_span:nth-child(2)]:min-w-0 [&_strong]:block [&_strong]:text-[.78rem] [&_small]:block [&_small]:mt-[.16rem] [&_small]:text-[#bfd0c8] [&_small]:text-[.68rem] [&_small]:leading-[1.35] max-[520px]:[&_small]:text-[.875rem]"}
       to="/workspace/$companyId/$branchId/$moduleCode"
       params={{ companyId, branchId, moduleCode: item.domain }}
       search={{
@@ -217,7 +232,7 @@ function PriorityItem({
       {body}
     </Link>
   ) : (
-    <div className="branch-priority branch-priority--static">{body}</div>
+    <div className={"branch-priority grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-[.7rem] min-h-15 p-[.7rem_1rem] text-inherit border-t border-solid border-t-[rgb(255_255_255/11%)] no-underline [&:hover]:bg-[rgb(255_255_255/6%)] focus-visible:[outline:3px_solid_#78bda2] focus-visible:outline-offset-[-3px] [&_>_span:nth-child(2)]:min-w-0 [&_strong]:block [&_strong]:text-[.78rem] [&_small]:block [&_small]:mt-[.16rem] [&_small]:text-[#bfd0c8] [&_small]:text-[.68rem] [&_small]:leading-[1.35] max-[520px]:[&_small]:text-[.875rem] [&_>_svg]:opacity-[.35]"}>{body}</div>
   );
 }
 
@@ -267,22 +282,17 @@ function ActivityPanel({
               className: "findings",
             },
           ];
-  const max = Math.max(
-    1,
-    ...data.activity.flatMap((point) => series.map((item) => point[item.key])),
-  );
   return (
-    <section className="branch-dashboard__activity">
+    <section className={"min-w-0 border border-solid border-line rounded-panel bg-surface shadow-panel min-h-0 p-5 [&_>_header]:flex [&_>_header]:items-start [&_>_header]:justify-between [&_>_header]:gap-4 [&_>_header]:flex-col [&_header_p]:mt-[.3rem] [&_header_p]:text-muted [&_header_p]:text-[.78rem] [&_header_p]:leading-[1.45] max-[520px]:min-h-88 max-[520px]:p-4 max-[520px]:[&_>_header]:items-start max-[520px]:[&_>_header]:flex-col max-[520px]:[&_header_p]:text-[.875rem] [&_.domain-switcher]:w-full [&_.domain-switcher]:flex-nowrap [&_.domain-switcher]:justify-start [&_.domain-switcher]:overflow-x-auto [&_.domain-switcher_button]:flex-[1_0_auto] [&_.domain-switcher_button]:min-h-11 [&_.domain-switcher_button]:whitespace-nowrap [&_.domain-switcher_button]:text-[.875rem] [&_.activity-legend]:justify-start [&_.activity-legend]:flex-wrap [&_.activity-legend]:mt-4"}>
       <header>
         <div>
           <h2>Atividade no período</h2>
           <p>
-            Eventos históricos; os indicadores acima representam a situação
-            atual.
+            Conclusões e ocorrências registradas no período selecionado.
           </p>
         </div>
         <div
-          className="domain-switcher"
+          className={"domain-switcher flex flex-wrap justify-end gap-[.25rem] p-[.2rem] rounded-[.65rem] bg-canvas [&_button]:min-h-8 [&_button]:p-[0_.65rem] [&_button]:border-0 [&_button]:rounded-[.5rem] [&_button]:text-muted [&_button]:bg-transparent [&_button]:font-[inherit] [&_button]:text-[.7rem] [&_button]:font-extrabold [&_button]:cursor-pointer [&_button:hover]:text-ink [&_button.active]:text-white [&_button.active]:bg-accent [&_button:focus-visible]:[outline:3px_solid_color-mix(in_srgb,var(--color-accent)_28%,transparent)] [&_button:focus-visible]:outline-offset-2 max-[520px]:justify-start max-[520px]:w-full max-[520px]:[&_button]:min-h-11 max-[520px]:[&_button]:p-[.6rem_.75rem] max-[520px]:[&_button]:text-[.875rem]"}
           role="group"
           aria-label="Domínio da atividade"
         >
@@ -290,7 +300,7 @@ function ActivityPanel({
             <button
               type="button"
               key={item}
-              className={item === domain ? "active" : ""}
+              className={(item === domain ? "active" : "")}
               aria-pressed={item === domain}
               onClick={() => setDomain(item)}
             >
@@ -299,7 +309,7 @@ function ActivityPanel({
           ))}
         </div>
       </header>
-      <div className="activity-legend">
+      <div className={"activity-legend flex justify-end gap-4 m-[1rem_0_0.5rem] text-muted text-[0.72rem] [&_span]:inline-flex [&_span]:items-center [&_span]:gap-[0.35rem] [&_i]:w-[0.6rem] [&_i]:h-[0.6rem] [&_i]:rounded-[0.2rem] [&_.completed]:bg-accent [&_.findings]:bg-[#d89830] max-[520px]:justify-start max-[520px]:flex-wrap"}>
         {series.map((item) => (
           <span key={item.key}>
             <i className={item.className} />
@@ -310,38 +320,9 @@ function ActivityPanel({
       {data.activity.some((point) =>
         series.some((item) => point[item.key] > 0),
       ) ? (
-        <div
-          className="activity-chart"
-          aria-label={`Atividade de ${moduleMeta[domain].label}`}
-        >
-          {data.activity.map((point) => {
-            const exactValues = `${point.label}: ${series.map((item) => `${item.label}, ${point[item.key]}`).join("; ")}`;
-            return (
-              <div
-                className="activity-column"
-                key={point.start}
-                tabIndex={0}
-                aria-label={exactValues}
-                title={exactValues}
-              >
-                <div className="activity-bars" aria-hidden="true">
-                  {series.map((item) => (
-                    <i
-                      key={item.key}
-                      className={item.className}
-                      style={{
-                        height: `${Math.max(point[item.key] ? 7 : 0, (point[item.key] / max) * 100)}%`,
-                      }}
-                    />
-                  ))}
-                </div>
-                <span aria-hidden="true">{point.label}</span>
-              </div>
-            );
-          })}
-        </div>
+        <OperationalChart label={`Atividade de ${moduleMeta[domain].label}`} data={data.activity.map((point) => ({ ...point }))} series={series.map((item) => ({ key: item.key, label: item.label }))} />
       ) : (
-        <div className="branch-dashboard__empty">
+        <div className={"branch-dashboard__empty grid place-items-center gap-[.35rem] min-h-60 text-muted text-center [&.compact]:min-h-28 [&.compact]:p-4 [&_strong]:text-inherit [&_strong]:text-[.84rem] [&_span]:max-w-[45ch] [&_span]:text-[.72rem] max-[520px]:[&_span]:text-[.875rem]"}>
           <Activity size={24} />
           <strong>Nenhuma atividade registrada</strong>
           <span>Os eventos deste domínio aparecerão aqui.</span>
@@ -361,6 +342,8 @@ function ModuleDetails({
   periodDays,
   categoryId,
   actionable,
+  permissions,
+  headerControls,
 }: {
   domain: DashboardDomain;
   summary: TrainingSummary | InspectionSummary | AprSummary;
@@ -371,10 +354,12 @@ function ModuleDetails({
   periodDays: PeriodDays;
   categoryId?: string;
   actionable: boolean;
+  permissions: string[];
+  headerControls?: ReactNode;
 }) {
   const priorities = useQuery({
     queryKey: [
-      "branch-dashboard-priorities",
+      "",
       companyId,
       branchId,
       domain,
@@ -434,9 +419,11 @@ function ModuleDetails({
               (summary as AprSummary).workPermitsWithTrainingGaps,
             ],
           ];
+  const start = moduleStart(domain, summary, Boolean(categoryId));
+  const canStart = start && permissions.includes(start.permission);
   const Icon = meta.Icon;
   return (
-    <section className="branch-module-detail">
+    <section className={String.raw`min-w-0 border border-solid border-line rounded-panel bg-surface shadow-panel overflow-hidden [&_>_header]:flex [&_>_header]:items-center [&_>_header]:justify-start [&_>_header]:gap-4 [&_>_header]:p-[1.1rem_1.15rem_.85rem] [&_>_header]:flex-wrap [&_header_p]:mt-[.3rem] [&_header_p]:text-muted [&_header_p]:text-[.78rem] [&_header_p]:leading-[1.45] [&_.branch-priority]:text-ink [&_.branch-priority]:border-t-line [&_.branch-priority:hover]:bg-[#f6f7f2] [&_.branch-priority_small]:text-muted [&_>_header_>_span]:grid [&_>_header_>_span]:place-items-center [&_>_header_>_span]:w-[2.1rem] [&_>_header_>_span]:h-[2.1rem] [&_>_header_>_span]:rounded-[.6rem] [&_>_header_>_span]:text-accent-strong [&_>_header_>_span]:bg-[#e6eee9] [&_>_header_>_span]:shrink-0 [&_dl]:grid [&_dl]:grid-cols-5 [&_dl]:m-0 [&_dl]:border-t [&_dl]:border-solid [&_dl]:border-t-line [&_dl]:border-b [&_dl]:border-solid [&_dl]:border-b-line [&_dl_div]:min-w-0 [&_dl_div]:p-[.8rem_1rem] [&_dl_div]:border-l [&_dl_div]:border-solid [&_dl_div]:border-l-line [&_dl_div:first-child]:border-l-0 [&_dt]:min-h-[2.1em] [&_dt]:text-muted [&_dt]:text-[.68rem] [&_dt]:font-extrabold [&_dt]:leading-[1.2] [&_dd]:m-[.25rem_0_0] [&_dd]:text-[1.25rem] [&_dd]:font-black [&_dd]:tabular-nums [&_.pagination]:p-[.8rem_1rem] [&_.pagination]:border-t [&_.pagination]:border-solid [&_.pagination]:border-t-line max-[800px]:[&_dl]:grid-cols-3 max-[800px]:[&_dl_div:nth-child(4)]:border-l-0 max-[800px]:[&_dl_div:nth-child(4)]:border-t max-[800px]:[&_dl_div:nth-child(4)]:border-solid max-[800px]:[&_dl_div:nth-child(4)]:border-t-line max-[800px]:[&_dl_div:nth-child(5)]:border-t max-[800px]:[&_dl_div:nth-child(5)]:border-solid max-[800px]:[&_dl_div:nth-child(5)]:border-t-line max-[520px]:[&_header_p]:text-[.875rem] max-[520px]:[&_dl]:grid-cols-2 max-[520px]:[&_dl_div]:border-l-0 max-[520px]:[&_dl_div]:border-t max-[520px]:[&_dl_div]:border-solid max-[520px]:[&_dl_div]:border-t-line max-[520px]:[&_dl_div:nth-child(4)]:border-l-0 max-[520px]:[&_dl_div:nth-child(4)]:border-t max-[520px]:[&_dl_div:nth-child(4)]:border-solid max-[520px]:[&_dl_div:nth-child(4)]:border-t-line max-[520px]:[&_dl_div:nth-child(5)]:border-l-0 max-[520px]:[&_dl_div:nth-child(5)]:border-t max-[520px]:[&_dl_div:nth-child(5)]:border-solid max-[520px]:[&_dl_div:nth-child(5)]:border-t-line max-[520px]:[&_dl_div:nth-child(even)]:border-l max-[520px]:[&_dl_div:nth-child(even)]:border-solid max-[520px]:[&_dl_div:nth-child(even)]:border-l-line max-[520px]:[&_dl_div:first-child]:border-t-0 max-[520px]:[&_dl_div:nth-child(2)]:border-t-0 [&_.branch-dashboard\_\_empty.compact]:min-h-0 [&_.branch-dashboard\_\_empty.compact]:flex [&_.branch-dashboard\_\_empty.compact]:items-center [&_.branch-dashboard\_\_empty.compact]:justify-between [&_.branch-dashboard\_\_empty.compact]:flex-wrap [&_.branch-dashboard\_\_empty.compact]:gap-[.75rem] [&_.branch-dashboard\_\_empty.compact]:text-left [&_.branch-dashboard\_\_empty.compact]:p-[1rem_1.15rem] [&_.branch-dashboard\_\_empty.compact_>_svg]:hidden [&_.branch-dashboard\_\_empty.compact_>_span]:basis-full [&_.branch-dashboard\_\_empty.compact_>_span]:max-w-[68ch] [&_.branch-dashboard\_\_empty.compact_>_span]:leading-normal [&_.branch-dashboard\_\_empty.compact_>_a]:shrink-0 [&_.branch-dashboard\_\_empty.compact_>_a]:no-underline max-[520px]:[&_.branch-dashboard\_\_empty.compact_>_a]:w-full max-[520px]:[&_.branch-dashboard\_\_empty.compact_>_a]:min-h-11 [&_>_header_>_div]:flex-[1_1_18rem]`}>
       <header>
         <span>
           <Icon size={20} />
@@ -445,6 +432,7 @@ function ModuleDetails({
           <h2>{meta.label}</h2>
           <p>Resumo atual e prioridades que exigem acompanhamento.</p>
         </div>
+        {headerControls}
       </header>
       <dl>
         {stats.map(([label, value]) => (
@@ -455,11 +443,11 @@ function ModuleDetails({
         ))}
       </dl>
       {priorities.isPending ? (
-        <div className="branch-dashboard__empty compact">
+        <div className={"branch-dashboard__empty grid place-items-center gap-[.35rem] min-h-60 text-muted text-center [&.compact]:min-h-28 [&.compact]:p-4 [&_strong]:text-inherit [&_strong]:text-[.84rem] [&_span]:max-w-[45ch] [&_span]:text-[.72rem] max-[520px]:[&_span]:text-[.875rem] compact"}>
           <span>Carregando prioridades…</span>
         </div>
       ) : priorities.isError ? (
-        <div className="branch-dashboard__empty compact">
+        <div className={"branch-dashboard__empty grid place-items-center gap-[.35rem] min-h-60 text-muted text-center [&.compact]:min-h-28 [&.compact]:p-4 [&_strong]:text-inherit [&_strong]:text-[.84rem] [&_span]:max-w-[45ch] [&_span]:text-[.72rem] max-[520px]:[&_span]:text-[.875rem] compact"}>
           <strong>Não foi possível carregar os detalhes</strong>
           <Button
             variant="secondary"
@@ -471,7 +459,7 @@ function ModuleDetails({
         </div>
       ) : priorities.data?.items.length ? (
         <>
-          <div className="branch-priority-list">
+          <div className={"grid"}>
             {priorities.data.items.map((item) => (
               <PriorityItem
                 key={item.id}
@@ -489,11 +477,25 @@ function ModuleDetails({
             onPageChange={setPage}
           />
         </>
+      ) : domain === 'inspections' && categoryId && (summary as InspectionSummary).registeredAssets === 0 ? (
+        <div className={"branch-dashboard__empty grid place-items-center gap-[.35rem] min-h-60 text-muted text-center [&.compact]:min-h-28 [&.compact]:p-4 [&_strong]:text-inherit [&_strong]:text-[.84rem] [&_span]:max-w-[45ch] [&_span]:text-[.72rem] max-[520px]:[&_span]:text-[.875rem] compact"}>
+          <strong>Nenhum ativo nesta categoria</strong>
+          <Link className={"ui-button inline-flex items-center justify-center gap-2 rounded-control font-[inherit] font-[750] cursor-pointer [transition:background_140ms_ease,border-color_140ms_ease,color_140ms_ease,transform_140ms_ease] [&:active:not(:disabled)]:transform-[translateY(1px)] disabled:cursor-not-allowed disabled:opacity-50 [&.danger]:text-danger border border-solid border-line text-ink bg-white [&:hover:not(:disabled)]:border-[#9fb0a7] [&:hover:not(:disabled)]:bg-[#f4f6f2] min-h-[2.4rem] p-[0.5rem_0.7rem] text-[0.8rem]"} to="/workspace/$companyId/$branchId"
+            params={{ companyId, branchId }} search={(previous) => ({ periodDays, categoryId: undefined, activityDomain: previous.activityDomain, trainingPage: previous.trainingPage ?? 1, inspectionsPage: 1, aprPage: previous.aprPage ?? 1 })}>
+            Limpar filtro
+          </Link>
+        </div>
+      ) : canStart ? (
+        <BranchModuleStart start={start} companyId={companyId} branchId={branchId} domain={domain} />
       ) : (
-        <div className="branch-dashboard__empty compact">
+        <div className={"branch-dashboard__empty grid place-items-center gap-[.35rem] min-h-60 text-muted text-center [&.compact]:min-h-28 [&.compact]:p-4 [&_strong]:text-inherit [&_strong]:text-[.84rem] [&_span]:max-w-[45ch] [&_span]:text-[.72rem] max-[520px]:[&_span]:text-[.875rem] compact"}>
           <ClipboardCheck size={22} />
-          <strong>Nenhuma prioridade neste domínio</strong>
-          <span>Os registros atuais não exigem intervenção.</span>
+          <strong>{domain === 'inspections' ? 'Nenhuma pendência identificada nos ativos acompanhados.' : domain === 'training' ? 'Nenhuma pendência identificada nas obrigações acompanhadas.' : 'Nenhuma pendência identificada nos documentos acompanhados.'}</strong>
+          {permissions.length > 0 && <Link className={"ui-button inline-flex items-center justify-center gap-2 rounded-control font-[inherit] font-[750] cursor-pointer [transition:background_140ms_ease,border-color_140ms_ease,color_140ms_ease,transform_140ms_ease] [&:active:not(:disabled)]:transform-[translateY(1px)] disabled:cursor-not-allowed disabled:opacity-50 [&.danger]:text-danger border border-solid border-line text-ink bg-white [&:hover:not(:disabled)]:border-[#9fb0a7] [&:hover:not(:disabled)]:bg-[#f4f6f2] min-h-[2.4rem] p-[0.5rem_0.7rem] text-[0.8rem]"}
+            to="/workspace/$companyId/$branchId/$moduleCode" params={{ companyId, branchId, moduleCode: domain }}
+            search={{ tab: permissions.some((permission) => permission !== 'analytics.view') ? domain === 'inspections' ? 'assets' : domain === 'training' ? 'courses' : 'documents' : 'overview', page: 1, q: '', action: undefined, id: undefined, periodDays }}>
+            {permissions.some((permission) => permission !== 'analytics.view') ? domain === 'inspections' ? 'Ver ativos' : domain === 'training' ? 'Ver treinamentos' : 'Ver APRs' : 'Ver visão geral'}<ArrowRight size={16} />
+          </Link>}
         </div>
       )}
     </section>
@@ -515,7 +517,7 @@ function DashboardContent({
   const navigate = useNavigate({ from: branchRoute.fullPath });
   const dashboard = useQuery({
     queryKey: [
-      "branch-dashboard",
+      "",
       companyId,
       branchId,
       search.periodDays,
@@ -542,35 +544,13 @@ function DashboardContent({
   const domains = (
     ["training", "inspections", "apr"] as DashboardDomain[]
   ).filter((item) => data?.contractedModules.includes(item));
-  const activeDomain = domains.includes(search.activityDomain ?? "training")
-    ? search.activityDomain!
+  const activeDomain = search.activityDomain && domains.includes(search.activityDomain)
+    ? search.activityDomain
     : (domains[0] ?? "inspections");
-  const entries = branch
-    ? [
-        ...(branch.foundationPermissions.includes("person.manage")
-          ? [
-              {
-                code: "people",
-                name: "Pessoas e estrutura",
-                description:
-                  "Colaboradores, departamentos, funções e prestadores.",
-                Icon: Network,
-              },
-            ]
-          : []),
-        ...branch.modules.map((module) => ({
-          code: module.code,
-          name: module.name,
-          description: "Abrir operação e cadastros do módulo.",
-          Icon:
-            moduleMeta[module.code as DashboardDomain]?.Icon ?? ClipboardCheck,
-        })),
-      ]
-    : [];
   if (dashboard.isPending)
     return (
       <div
-        className="branch-dashboard__skeleton"
+        className={"grid gap-4 [&_div]:min-h-28 [&_div]:rounded-panel [&_div]:bg-[#e8e9e4] [&_div]:animate-[dashboard-pulse_1.2s_ease-in-out_infinite_alternate] [&_div:nth-child(2)]:min-h-100"}
         aria-label="Carregando dashboard da filial"
       >
         <div />
@@ -580,7 +560,7 @@ function DashboardContent({
     );
   if (dashboard.isError || !data)
     return (
-      <section className="dashboard-error">
+      <section className={"min-w-0 border border-solid border-line rounded-panel bg-surface shadow-panel flex items-center gap-4 p-5 text-danger [&_div]:flex-1 [&_h2]:m-[0_0_0.25rem] [&_h2]:text-ink [&_p]:m-0 [&_p]:text-muted"}>
         <AlertTriangle size={22} />
         <div>
           <h2>Não foi possível carregar o dashboard</h2>
@@ -597,9 +577,9 @@ function DashboardContent({
     timeZone: data.timezone,
   }).format(new Date(data.generatedAt));
   return (
-    <div className="branch-dashboard">
+    <div className={"grid gap-4 [&_h2]:m-0 [&_h2]:text-[1.05rem] [&_h2]:tracking-[-0.015em] [&_p]:m-0"}>
       <section
-        className="branch-dashboard__filterbar"
+        className={"grid grid-cols-[minmax(15rem,1fr)_minmax(11rem,.36fr)_auto_auto] items-end gap-[.8rem] p-[.9rem_1rem] border border-solid border-line rounded-panel bg-surface [&_>_div:first-child]:flex [&_>_div:first-child]:items-center [&_>_div:first-child]:gap-[.65rem] [&_>_div:first-child]:min-h-11 [&_>_div:first-child_>_svg]:text-accent [&_h1]:block [&_h1]:m-0 [&_h1]:text-[1.35rem] [&_h1]:leading-[1.1] [&_h1]:tracking-tight [&_small]:block [&_small]:mt-[.15rem] [&_small]:text-muted [&_small]:text-[.72rem] [&_label]:grid [&_label]:gap-[.35rem] [&_label]:text-muted [&_label]:text-[.72rem] [&_label]:font-extrabold max-[800px]:grid-cols-[1fr_1fr] max-[800px]:[&_>_div:first-child]:col-span-full max-[520px]:grid-cols-[minmax(0,1fr)_auto] max-[520px]:p-[.85rem] max-[520px]:[&_>_label]:col-span-full max-[520px]:[&_small]:text-[.875rem] max-[520px]:[&_label]:text-[.875rem]"}
         aria-label="Cabeçalho e filtros do dashboard"
       >
         <div>
@@ -632,7 +612,7 @@ function DashboardContent({
           </Select>
         </label>
         <div
-          className="branch-dashboard__updated"
+          className={"flex items-center gap-[.45rem] min-h-11 text-muted text-[.72rem] tabular-nums max-[520px]:col-span-full max-[520px]:text-[.875rem]"}
           role="status"
           aria-live="polite"
         >
@@ -650,7 +630,7 @@ function DashboardContent({
         </Button>
       </section>
       <section
-        className="branch-dashboard__metrics"
+        className={"grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] overflow-hidden border border-solid border-line rounded-panel bg-surface shadow-panel max-[520px]:grid-cols-[1fr]"}
         aria-label="Indicadores atuais"
       >
         {data.snapshot.training && (
@@ -688,22 +668,22 @@ function DashboardContent({
           />
         )}
       </section>
-      <div className="branch-dashboard__primary">
-        <ActivityPanel
+      <div className={"grid grid-cols-[minmax(0,2fr)_minmax(19rem,1fr)] gap-4 items-start max-[800px]:grid-cols-[1fr]"}>
+        {domains.length > 0 && <ActivityPanel
           data={data}
           domain={activeDomain}
           setDomain={(activityDomain) => setSearch({ activityDomain })}
-        />
-        <aside className="branch-dashboard__priorities">
+        />}
+        <aside className={(cx("min-w-0 border border-solid rounded-panel overflow-hidden [&_>_header]:flex [&_>_header]:items-center [&_>_header]:justify-between [&_>_header]:gap-4 [&_>_header]:p-[1.25rem_1.25rem_.75rem] [&_header_p]:mt-[.3rem] [&_header_p]:text-[.78rem] [&_header_p]:leading-[1.45] [&_>_header_>_span]:grid [&_>_header_>_span]:place-items-center [&_>_header_>_span]:min-w-[1.8rem] [&_>_header_>_span]:h-[1.8rem] [&_>_header_>_span]:p-[0_.4rem] [&_>_header_>_span]:rounded-[999px] [&_>_header_>_span]:text-[#173329] [&_>_header_>_span]:bg-[#d9eee4] [&_>_header_>_span]:text-[.72rem] [&_>_header_>_span]:font-black max-[520px]:[&_header_p]:text-[.875rem]", data.priorities.length ? String.raw`bg-[#13251f] shadow-[0_12px_30px_rgb(19_37_31/14%)] text-[#f5faf7] border-[#13251f] [&_header_p]:text-[#bfd0c8] [&_.branch-dashboard\_\_empty]:text-[#d5e0db]` : String.raw`text-ink bg-surface border-line shadow-panel [&_header_p]:text-muted [&_.branch-dashboard\_\_empty]:text-muted [&_.branch-dashboard\_\_empty]:min-h-0 [&_.branch-dashboard\_\_empty]:p-[.75rem_1.25rem_1.25rem] [&_.branch-dashboard\_\_empty]:text-left [&_.branch-dashboard\_\_empty]:justify-items-start [&_.branch-dashboard\_\_empty_>_svg]:hidden`))}>
           <header>
             <div>
               <h2>Prioridades</h2>
-              <p>Risco presente e próximas intervenções.</p>
+              <p>Pendências nos registros acompanhados.</p>
             </div>
             <span>{data.priorities.length}</span>
           </header>
           {data.priorities.length ? (
-            <div className="branch-priority-list">
+            <div className={"grid"}>
               {data.priorities.map((item) => (
                 <PriorityItem
                   key={item.id}
@@ -715,20 +695,19 @@ function DashboardContent({
               ))}
             </div>
           ) : (
-            <div className="branch-dashboard__empty compact">
+            <div className={"branch-dashboard__empty grid place-items-center gap-[.35rem] min-h-60 text-muted text-center [&.compact]:min-h-28 [&.compact]:p-4 [&_strong]:text-inherit [&_strong]:text-[.84rem] [&_span]:max-w-[45ch] [&_span]:text-[.72rem] max-[520px]:[&_span]:text-[.875rem] compact"}>
               <ClipboardCheck size={22} />
               <strong>Nenhuma prioridade atual</strong>
-              <span>Os sinais monitorados estão em ordem.</span>
+              <span>Nenhuma pendência identificada nos registros acompanhados.</span>
             </div>
           )}
         </aside>
       </div>
-      <section className="branch-dashboard__details-heading">
+      <section className={"flex items-end justify-between gap-4 mt-4 p-[0_.15rem] [&_p]:mt-[.3rem] [&_p]:text-muted [&_p]:text-[.78rem] [&_p]:leading-[1.45] [&_>_span]:inline-flex [&_>_span]:items-center [&_>_span]:gap-[.4rem] [&_>_span]:flex-[0_0_auto] [&_>_span]:text-accent-strong [&_>_span]:text-[.72rem] [&_>_span]:font-[850] max-[520px]:items-start max-[520px]:flex-col max-[520px]:[&_p]:text-[.875rem] max-[520px]:[&_>_span]:text-[.875rem]"}>
         <div>
           <h2>Detalhes por domínio</h2>
           <p>
-            Listas paginadas com cinco registros por vez, sem ocultar conteúdo
-            em scroll interno.
+            Situação dos registros acompanhados e próximos passos por módulo.
           </p>
         </div>
         <span>
@@ -740,10 +719,11 @@ function DashboardContent({
               : `${search.periodDays} dias`}
         </span>
       </section>
-      <div className="branch-dashboard__modules">
-        {data.modules.training && (
+      <div className={"grid gap-4"}>
+        {domains.includes("training") && data.modules.training && (
           <ModuleDetails
             domain="training"
+            permissions={branch?.modules.find((item) => item.code === "training")?.permissions ?? []}
             summary={data.modules.training}
             page={search.trainingPage}
             setPage={(trainingPage) => setSearch({ trainingPage })}
@@ -753,35 +733,11 @@ function DashboardContent({
             actionable={Boolean(session)}
           />
         )}
-        {data.modules.inspections && (
+        {domains.includes("inspections") && data.modules.inspections && (
           <>
-            <div className="branch-dashboard__category">
-              <label>
-                <span>Categoria de equipamento</span>
-                <Select
-                  aria-label="Categoria de equipamento"
-                  value={search.categoryId ?? ""}
-                  onChange={(event) =>
-                    setSearch({
-                      categoryId: event.target.value || undefined,
-                      inspectionsPage: 1,
-                    })
-                  }
-                >
-                  <option value="">Todas as categorias</option>
-                  {data.categories.map((category) => (
-                    <option value={category.id} key={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </Select>
-              </label>
-              <small>
-                Filtra somente o retrato atual de ativos e inspeções.
-              </small>
-            </div>
             <ModuleDetails
               domain="inspections"
+              permissions={branch?.modules.find((item) => item.code === "inspections")?.permissions ?? []}
               summary={data.modules.inspections}
               page={search.inspectionsPage}
               setPage={(inspectionsPage) => setSearch({ inspectionsPage })}
@@ -789,13 +745,22 @@ function DashboardContent({
               branchId={branchId}
               periodDays={search.periodDays}
               categoryId={search.categoryId}
+              headerControls={<label className={"grid gap-[.35rem] w-[min(100%,17rem)] ml-auto text-muted text-[.875rem] font-[750] max-[640px]:w-full max-[640px]:ml-0"}>
+                <span>Categoria de equipamento</span>
+                <Select aria-label="Categoria de equipamento" title="Filtra o retrato atual de ativos e inspeções" value={search.categoryId ?? ''}
+                  onChange={(event) => setSearch({ categoryId: event.target.value || undefined, inspectionsPage: 1 })}>
+                  <option value="">Todas as categorias</option>
+                  {data.categories.map((category) => <option value={category.id} key={category.id}>{category.name}</option>)}
+                </Select>
+              </label>}
               actionable={Boolean(session)}
             />
           </>
         )}
-        {data.modules.apr && (
+        {domains.includes("apr") && data.modules.apr && (
           <ModuleDetails
             domain="apr"
+            permissions={branch?.modules.find((item) => item.code === "apr")?.permissions ?? []}
             summary={data.modules.apr}
             page={search.aprPage}
             setPage={(aprPage) => setSearch({ aprPage })}
@@ -806,63 +771,7 @@ function DashboardContent({
           />
         )}
       </div>
-      {session && (
-        <section className="branch-dashboard__quick">
-          <header>
-            <div>
-              <h2>Acessos rápidos</h2>
-              <p>Continue a operação nos módulos liberados para sua função.</p>
-            </div>
-          </header>
-          <div>
-            {entries.map(({ code, name, description, Icon }) =>
-              code === "people" ? (
-                <Link
-                  key={code}
-                  to="/workspace/$companyId/$branchId/people"
-                  params={{ companyId, branchId }}
-                  search={{
-                    tab: undefined,
-                    page: 1,
-                    q: "",
-                    action: undefined,
-                    id: undefined,
-                    periodDays: search.periodDays,
-                  }}
-                >
-                  <Icon size={18} />
-                  <span>
-                    <strong>{name}</strong>
-                    <small>{description}</small>
-                  </span>
-                  <ArrowRight size={16} />
-                </Link>
-              ) : (
-                <Link
-                  key={code}
-                  to="/workspace/$companyId/$branchId/$moduleCode"
-                  params={{ companyId, branchId, moduleCode: code }}
-                  search={{
-                    tab: undefined,
-                    page: 1,
-                    q: "",
-                    action: undefined,
-                    id: undefined,
-                    periodDays: search.periodDays,
-                  }}
-                >
-                  <Icon size={18} />
-                  <span>
-                    <strong>{name}</strong>
-                    <small>{description}</small>
-                  </span>
-                  <ArrowRight size={16} />
-                </Link>
-              ),
-            )}
-          </div>
-        </section>
-      )}
+
     </div>
   );
 }
@@ -872,9 +781,9 @@ export function BranchHomePage() {
   const { data: session } = useSuspenseQuery(sessionQueryOptions);
   if (session.kind === "platform")
     return (
-      <div className="workspace company-dashboard">
+      <div className={"workspace m-[0_auto] p-[3.5rem_0_5rem] max-[520px]:pt-8 w-[min(94vw,96rem)] [&_.page-heading]:mb-6 [&_.page-heading_h1]:max-w-none [&_.page-heading_h1]:text-[clamp(2.1rem,4vw,3.5rem)] max-[520px]:w-[min(92vw,96rem)]"}>
         <Link
-          className="back-link"
+          className={"back-link inline-flex items-center gap-[0.4rem] mb-8 text-accent-strong font-[720] underline-offset-[0.22em]"}
           to="/platform/companies/$companyId"
           params={{ companyId }}
         >
