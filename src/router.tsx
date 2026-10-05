@@ -23,6 +23,9 @@ const legacyLandingRoute = createRoute({ getParentRoute: () => rootRoute, path: 
 const loginRoute = createRoute({ getParentRoute: () => rootRoute, path: '/login', validateSearch: (input: Record<string, unknown>) => ({
   redirect: typeof input.redirect === 'string' && input.redirect.startsWith('/') && !input.redirect.startsWith('//') ? input.redirect : undefined,
 }), component: LoginPage });
+const masterLoginRoute = createRoute({ getParentRoute: () => rootRoute, path: '/acesso-interno', validateSearch: (input: Record<string, unknown>) => ({
+  redirect: typeof input.redirect === 'string' && input.redirect.startsWith('/') && !input.redirect.startsWith('//') ? input.redirect : undefined,
+}), component: () => <LoginPage kind="platform" /> });
 const activateRoute = createRoute({ getParentRoute: () => rootRoute, path: '/activate', component: ActivatePage });
 const verifyEmailRoute = createRoute({ getParentRoute: () => rootRoute, path: '/verify-email', component: VerifyEmailPage });
 const forgotPasswordRoute = createRoute({ getParentRoute: () => rootRoute, path: '/forgot-password', component: ForgotPasswordPage });
@@ -34,7 +37,7 @@ const authenticatedRoute = createRoute({
   id: '_authenticated',
   beforeLoad: async ({ context, location }) => {
     try { return { session: await context.queryClient.ensureQueryData(sessionQueryOptions) }; }
-    catch { throw redirect({ to: '/login', search: { redirect: location.href } }); }
+    catch { throw redirect({ to: location.pathname.startsWith('/platform') ? '/acesso-interno' : '/login', search: { redirect: location.href } }); }
   },
   component: AuthenticatedLayout,
 });
@@ -100,7 +103,7 @@ export const peopleRoute = createRoute({ getParentRoute: () => authenticatedRout
   if (!branch?.foundationPermissions.some((permission) => permission === 'person.manage' || permission === 'analytics.view')) throw redirect({ to: '/app', search: { branchId: undefined, periodDays: undefined } });
 }, component: PeopleStructurePage });
 
-const routeTree = rootRoute.addChildren([landingRoute, legacyLandingRoute, loginRoute, activateRoute, verifyEmailRoute, forgotPasswordRoute, resetPasswordRoute, publicAssetRoute, publicPersonRoute,
+const routeTree = rootRoute.addChildren([landingRoute, legacyLandingRoute, loginRoute, masterLoginRoute, activateRoute, verifyEmailRoute, forgotPasswordRoute, resetPasswordRoute, publicAssetRoute, publicPersonRoute,
   authenticatedRoute.addChildren([indexRoute, platformRoute, platformCompanyRoute, accountRoute, microsoftAccountRoute, branchRoute, moduleRoute, peopleRoute])]);
 export const router = createRouter({ routeTree, context: { queryClient: undefined! }, defaultPreload: 'intent' });
 
