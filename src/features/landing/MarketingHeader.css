@@ -1,0 +1,72 @@
+html:has(.marketing-header) { scroll-behavior: smooth; scroll-padding-top: 112px; }
+.marketing-header {
+  position: fixed;
+  z-index: 80;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  width: min(calc(100% - 48px), 1200px);
+  min-height: 64px;
+  padding: 10px 12px 10px 20px;
+  border: 1px solid #cad6df;
+  border-radius: 999px;
+  background: rgb(248 249 247 / 96%);
+  backdrop-filter: blur(18px);
+  color: #06172f;
+  font-family: 'Manrope Variable', Manrope, sans-serif;
+}
+.marketing-header a { text-decoration: none; }
+.marketing-header .marketing-header__brand { display: inline-flex; align-items: center; gap: 8px; color: #06172f; font-size: 20px; font-weight: 700; letter-spacing: -.03em; white-space: nowrap; }
+.marketing-header__brand img { width: 32px; height: 32px; }
+.marketing-header__navigation { display: flex; align-items: center; justify-content: center; gap: 24px; margin-inline: auto; }
+.marketing-header__navigation a, .marketing-header__login { color: #3d536b; font-size: 14px; font-weight: 600; white-space: nowrap; }
+.marketing-header__actions { display: flex; align-items: center; gap: 20px; }
+.marketing-header .marketing-header__cta { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; padding: 10px 18px; border-radius: 999px; background: #087a58; color: #fff; font-size: 14px; font-weight: 650; white-space: nowrap; }
+.marketing-header__navigation a:hover, .marketing-header__login:hover { color: #087a58; }
+.marketing-header .marketing-header__cta:hover { background: #076348; }
+.marketing-header a:focus-visible, .marketing-header summary:focus-visible { outline: 3px solid #087a58; outline-offset: 4px; }
+.marketing-header__mobile { display: none; }
+.landing-v0 main > section[id] { scroll-margin-top: 0; }
+.landing-v0 > .marketing-header + .search-article { padding-top: 128px; }
+.landing-v0:has(> .marketing-header) .legal-article { padding-top: 128px; }
+@media (max-width: 1000px) {
+  .marketing-header { gap: 16px; }
+  .marketing-header__navigation, .marketing-header__login { display: none; }
+  .marketing-header__actions { margin-left: auto; }
+  .marketing-header__mobile { display: block; }
+  .marketing-header__mobile summary { display: flex; min-height: 44px; align-items: center; padding: 10px 14px; border-radius: 999px; color: #06172f; font-size: 14px; font-weight: 650; cursor: pointer; list-style: none; }
+  .marketing-header__mobile summary::-webkit-details-marker { display: none; }
+  .marketing-header__mobile[open] summary { background: #dceee5; }
+  .marketing-header__mobile nav { position: absolute; top: calc(100% + 12px); right: 0; display: grid; width: min(320px, calc(100vw - 32px)); padding: 12px; border: 1px solid #cad6df; border-radius: 16px; background: #f8f9f7; }
+  .marketing-header__mobile nav a { display: flex; align-items: center; min-height: 44px; padding: 10px 14px; color: #10243e; font-size: 15px; }
+  .marketing-header__mobile nav a:hover { background: #eaf2ed; border-radius: 8px; }
+}
+@media (max-width: 560px) {
+  html:has(.marketing-header) { scroll-padding-top: 96px; }
+  .marketing-header { top: 12px; width: calc(100% - 24px); min-height: 56px; padding: 6px 8px 6px 14px; }
+  .marketing-header__actions { display: none; }
+  .marketing-header__mobile { margin-left: auto; }
+}
+@media (prefers-reduced-motion: reduce) { html:has(.marketing-header) { scroll-behavior: auto; } }
+
+.marketing-page { min-height:100vh; color:#06172f; background:#f8f9f7; font-family:'Manrope Variable',Manrope,sans-serif; }
+.marketing-page main { width:min(100% - 40px,960px); margin:auto; padding:136px 0 80px; }
+.marketing-page main a:not(.marketing-header__cta) { color:#087a58; text-underline-offset:4px; }
+.marketing-page nav { font-size:14px; }
+.marketing-page__eyebrow { color:#087a58; font-weight:700; margin:48px 0 16px; }
+.marketing-page h1 { font-size:clamp(34px,5vw,60px); line-height:1.12; letter-spacing:-.03em; margin:0 0 24px; text-wrap:balance; }
+.marketing-page p { font-size:18px; line-height:1.75; }
+.marketing-page__intro { font-size:22px!important; }
+.marketing-page section { margin-top:40px; }
+.marketing-page h2 { font-size:26px; line-height:1.3; margin:0 0 16px; }
+.marketing-page__tiers { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.marketing-page__tiers > div { padding:24px; border:1px solid #cad6df; border-radius:16px; background:#fff; }
+.marketing-page__tiers h3 { margin:0 0 16px; }
+.marketing-page__contact { background:#e9f3ef; padding:32px; border-radius:16px; }
+.marketing-page__contact a { display:inline-flex; margin-top:16px; text-decoration:none; }
+.marketing-page aside { margin-top:56px; border-top:1px solid #cad6df; padding-top:32px; }
+.marketing-page li { margin:12px 0; }
+@media(max-width:640px) { .marketing-page__tiers { grid-template-columns:1fr; } .marketing-page main { padding-top:112px; } .marketing-page__contact { padding:24px; } }
