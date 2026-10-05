@@ -86,8 +86,8 @@ export function Templates({ scope, search, setSearch }: Omit<Props, "tab">) {
     onError: () => sileo.error({ title: "Não foi possível importar o catálogo APR" }),
   });
   return (
-    <div className="resource-layout">
-      <section className="resource-main">
+    <div className={"resource-layout grid grid-cols-[minmax(0,1fr)_minmax(20rem,25rem)] gap-4 items-start [&:not(:has(.editor-panel))]:grid-cols-[minmax(0,1fr)] max-[800px]:grid-cols-[1fr]"}>
+      <section className={"resource-main min-w-0 border border-solid border-line rounded-panel bg-surface shadow-panel p-4 max-[520px]:p-[0.85rem]"}>
         <ListToolbar
           value={search.q}
           onChange={(q) => { setCatalogPage(1); setSearch({ q, page: 1 }); }}
@@ -101,18 +101,18 @@ export function Templates({ scope, search, setSearch }: Omit<Props, "tab">) {
             {catalogNrs.map((nr) => <option key={nr} value={nr}>{nr}</option>)}
           </Select></Field>
         </ListToolbar>
-        <section className="apr-catalog-panel">
-          <div className="apr-catalog-heading">
+        <section className={"grid gap-[.85rem] m-[1rem_0_1.25rem] p-4 border border-solid border-line rounded-panel bg-surface"}>
+          <div className={"flex items-center justify-between gap-4 [&_p]:m-[.25rem_0_0] [&_p]:text-muted [&_p]:text-[.82rem] max-[640px]:items-start"}>
             <div><strong>Catálogo de APR por atividade</strong>
               <p>{importedCount} de {catalog.data?.length ?? 0} modelos disponíveis nesta filial.</p></div>
             {pendingCount > 0 && <Button type="button" variant="secondary"
               disabled={importCatalog.isPending} onClick={() => importCatalog.mutate(undefined)}>
               {importCatalog.isPending ? "Atualizando…" : `Importar / atualizar ${pendingCount} modelos`}</Button>}
           </div>
-          <div className="apr-catalog-list">
-            {visibleCatalog.map((item) => <div className="apr-catalog-item" key={item.code}>
+          <div className={"grid border-t border-solid border-t-line"}>
+            {visibleCatalog.map((item) => <div className={"flex items-center justify-between gap-4 p-[.7rem_0] border-b border-solid border-b-line [&_>_div]:grid [&_>_div]:gap-[.2rem] [&_>_div]:min-w-0 [&_>_.apr-catalog-actions]:flex [&_>_.apr-catalog-actions]:items-center [&_>_.apr-catalog-actions]:justify-end [&_>_.apr-catalog-actions]:gap-[.25rem] [&_>_.apr-catalog-actions]:flex-[0_0_auto] [&_strong]:text-[.84rem] [&_small]:text-muted max-[640px]:items-start"} key={item.code}>
               <div><strong>{item.name}</strong><small>{item.nr} · {item.questionCount} perguntas · {item.upToDate ? "Na filial" : item.imported ? "Atualização disponível" : "Pendente"}</small></div>
-              <div className="apr-catalog-actions">
+              <div className={"apr-catalog-actions"}>
                 <Button type="button" variant="ghost" size="icon" aria-label={`Ver detalhes de ${item.name}`}
                   title="Ver detalhes" onClick={() => setPreviewCode(item.code)}><Eye size={18} aria-hidden="true" /></Button>
                 {!item.upToDate && <Button type="button" variant="ghost" size="sm" disabled={importCatalog.isPending}
@@ -121,7 +121,7 @@ export function Templates({ scope, search, setSearch }: Omit<Props, "tab">) {
             </div>)}
             {!visibleCatalog.length && <p>Nenhuma atividade encontrada. Ajuste a busca ou a NR.</p>}
           </div>
-          {catalogPageCount > 1 && <div className="apr-catalog-pages">
+          {catalogPageCount > 1 && <div className={"flex items-center justify-end gap-4 text-[.78rem]"}>
             <Button type="button" variant="ghost" size="sm" disabled={catalogPage <= 1}
               onClick={() => setCatalogPage((page) => page - 1)}>Anterior</Button>
             <span>{Math.min(catalogPage, catalogPageCount)} / {catalogPageCount}</span>
@@ -159,23 +159,23 @@ export function Templates({ scope, search, setSearch }: Omit<Props, "tab">) {
       {previewCode && <FormModal
         title={previewItem?.name ?? preview.data?.name ?? "Detalhes do template"}
         description={`${previewItem?.nr ?? preview.data?.nr ?? "APR"} · Versão do catálogo ${previewItem?.versionNo ?? preview.data?.versionNo ?? "—"} · ${previewItem?.questionCount ?? preview.data?.questions.length ?? "—"} perguntas de segurança`}
-        className="form-modal--apr-catalog"
+        className={"w-[min(46rem,calc(100vw-2rem))]"}
         closeLabel="Fechar detalhes do template"
         onClose={() => setPreviewCode(null)}
       >
         {preview.isPending && <p role="status">Carregando detalhes do template…</p>}
-        {preview.isError && <div className="apr-catalog-preview-error" role="alert">
+        {preview.isError && <div className={"grid justify-items-start gap-[.8rem] [&_p]:m-0"} role="alert">
           <p>Não foi possível carregar os detalhes deste template.</p>
           <Button type="button" variant="secondary" size="sm" onClick={() => { void preview.refetch(); }}>Tentar novamente</Button>
         </div>}
-        {preview.data && <div className="apr-catalog-preview">
+        {preview.data && <div className={"grid gap-5 [&_section]:grid [&_section]:gap-[.45rem] [&_h3]:m-0 [&_h3]:text-[.9rem] [&_p]:m-0 [&_p]:text-[.85rem] [&_p]:leading-[1.55] [&_p]:whitespace-pre-wrap"}>
           {preview.data.instructions && <section><h3>Instruções</h3><p>{preview.data.instructions}</p></section>}
           <section><h3>Riscos identificados</h3><p>{preview.data.riskSummary || "Não informado."}</p></section>
           <section><h3>Medidas de controle</h3><p>{preview.data.controlSummary || "Não informado."}</p></section>
           <section><h3>Perguntas de segurança</h3>
-            <ol className="apr-catalog-preview-questions">
+            <ol className={"grid m-[.2rem_0_0] p-0 list-none [&_li]:flex [&_li]:gap-[.75rem] [&_li]:p-[.75rem_0] [&_li]:border-t [&_li]:border-solid [&_li]:border-t-line [&_li_>_div]:min-w-0 [&_small]:block [&_small]:mt-[.25rem] [&_small]:text-muted [&_small]:text-[.72rem]"}>
               {preview.data.questions.map((question, index) => <li key={question.code}>
-                <span className="apr-catalog-preview-number">{index + 1}</span>
+                <span className={"grid place-items-center flex-[0_0_1.5rem] h-6 rounded-[50%] text-accent-strong bg-accent-soft text-[.72rem] font-extrabold"}>{index + 1}</span>
                 <div><p>{question.text}</p><small>{question.required ? "Obrigatória" : "Opcional"} · {question.allowNa ? "Permite N/A" : "Sem N/A"}</small></div>
               </li>)}
             </ol>
@@ -189,7 +189,7 @@ export function Templates({ scope, search, setSearch }: Omit<Props, "tab">) {
           onClose={() => setSearch({ action: undefined, id: undefined })}
         >
           <form
-            className="form-stack"
+            className={"grid gap-[0.8rem] [&_label]:grid [&_label]:gap-[0.4rem] [&_label]:text-muted [&_label]:text-[0.78rem] [&_label]:font-[750] [&_input:not([type='checkbox']):not([type='hidden'])]:w-full [&_input:not([type='checkbox']):not([type='hidden'])]:min-h-11 [&_input:not([type='checkbox']):not([type='hidden'])]:p-[0.65rem_0.75rem] [&_input:not([type='checkbox']):not([type='hidden'])]:border [&_input:not([type='checkbox']):not([type='hidden'])]:border-solid [&_input:not([type='checkbox']):not([type='hidden'])]:border-control-border [&_input:not([type='checkbox']):not([type='hidden'])]:rounded-control [&_input:not([type='checkbox']):not([type='hidden'])]:text-ink [&_input:not([type='checkbox']):not([type='hidden'])]:bg-white [&_input[aria-invalid='true']]:border-danger [&_.ui-checkbox-field]:flex [&_.ui-checkbox-field]:items-center [&_.ui-checkbox-field]:justify-between [&_.ui-checkbox-field]:gap-3 [&_.ui-checkbox-field]:w-full [&_.ui-checkbox-field]:min-h-10 [&_.ui-checkbox-field]:text-ink [&_.ui-checkbox-field]:cursor-pointer"}
             onSubmit={form.handleSubmit((v) => save.mutate(v))}
           >
             <Field label="Nome">
@@ -210,8 +210,8 @@ export function Templates({ scope, search, setSearch }: Omit<Props, "tab">) {
             <Field label="Riscos identificados no modelo"><Textarea rows={3} {...form.register("riskSummary")} /></Field>
             <Field label="Medidas de controle do modelo"><Textarea rows={3} {...form.register("controlSummary")} /></Field>
             <strong>Perguntas de segurança</strong>
-            {questions.fields.map((field, index) => <section className="form-stack" key={field.id}>
-              <div className="form-row"><strong>Pergunta {index + 1}</strong><Button type="button" variant="ghost" size="sm"
+            {questions.fields.map((field, index) => <section className={"grid gap-[0.8rem] [&_label]:grid [&_label]:gap-[0.4rem] [&_label]:text-muted [&_label]:text-[0.78rem] [&_label]:font-[750] [&_input:not([type='checkbox']):not([type='hidden'])]:w-full [&_input:not([type='checkbox']):not([type='hidden'])]:min-h-11 [&_input:not([type='checkbox']):not([type='hidden'])]:p-[0.65rem_0.75rem] [&_input:not([type='checkbox']):not([type='hidden'])]:border [&_input:not([type='checkbox']):not([type='hidden'])]:border-solid [&_input:not([type='checkbox']):not([type='hidden'])]:border-control-border [&_input:not([type='checkbox']):not([type='hidden'])]:rounded-control [&_input:not([type='checkbox']):not([type='hidden'])]:text-ink [&_input:not([type='checkbox']):not([type='hidden'])]:bg-white [&_input[aria-invalid='true']]:border-danger [&_.ui-checkbox-field]:flex [&_.ui-checkbox-field]:items-center [&_.ui-checkbox-field]:justify-between [&_.ui-checkbox-field]:gap-3 [&_.ui-checkbox-field]:w-full [&_.ui-checkbox-field]:min-h-10 [&_.ui-checkbox-field]:text-ink [&_.ui-checkbox-field]:cursor-pointer"} key={field.id}>
+              <div className={"form-row grid grid-cols-[1fr_1fr] gap-[0.65rem] max-[520px]:grid-cols-[1fr]"}><strong>Pergunta {index + 1}</strong><Button type="button" variant="ghost" size="sm"
                 onClick={() => questions.remove(index)}>Remover</Button></div>
               <Field label="O que verificar"><Textarea {...form.register(`questions.${index}.text`, { required: true })} /></Field>
               <CheckboxField label="Resposta obrigatória"><Checkbox {...form.register(`questions.${index}.required`)} /></CheckboxField>

@@ -8,7 +8,7 @@ const FieldLabelContext = createContext<string | undefined>(undefined);
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> { invalid?: boolean }
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({ className, invalid, ...props }, ref) {
-  return <input ref={ref} className={cx("ui-control", className)} aria-invalid={invalid || undefined} {...props} />;
+  return <input ref={ref} className={cx("ui-control w-full min-h-11 p-[0.65rem_0.75rem] border border-solid border-control-border rounded-control text-ink bg-white font-[inherit] placeholder:text-[#68766f] [&:hover:not(:disabled)]:border-[#9eaaa3] focus:border-accent focus:[outline:3px_solid_var(--color-control-focus)] focus:outline-offset-0 aria-invalid:border-danger disabled:cursor-not-allowed disabled:text-[#748079] disabled:bg-[#eef0ec]", className)} aria-invalid={invalid || undefined} {...props} />;
 });
 
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> { invalid?: boolean; menuClassName?: string }
@@ -72,10 +72,10 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
     triggerRef.current?.focus();
   };
 
-  return <span className="ui-select">
+  return <span className={"block w-full min-w-0"}>
     <select
       ref={setNativeRef}
-      className="ui-select__native"
+      className={"absolute w-px h-px p-0 -m-px overflow-hidden [clip:rect(0_0_0_0)] whitespace-nowrap border-0"}
       value={selectedValue}
       disabled={disabled}
       tabIndex={-1}
@@ -90,7 +90,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
     <button
       ref={triggerRef}
       type="button"
-      className={cx("ui-control", "ui-select__trigger", className)}
+      className={cx("ui-control w-full min-h-11 p-[0.65rem_0.75rem] border border-solid border-control-border rounded-control text-ink bg-white font-[inherit] placeholder:text-[#68766f] [&:hover:not(:disabled)]:border-[#9eaaa3] focus:border-accent focus:[outline:3px_solid_var(--color-control-focus)] focus:outline-offset-0 aria-invalid:border-danger disabled:cursor-not-allowed disabled:text-[#748079] disabled:bg-[#eef0ec]", "ui-select__trigger flex items-center justify-between gap-3 text-left cursor-pointer [&_>_span]:min-w-0 [&_>_span]:overflow-hidden [&_>_span]:text-ellipsis [&_>_span]:whitespace-nowrap [&_svg]:flex-[0_0_auto] [&_svg]:[transition:transform_150ms_ease] [&[aria-expanded='true']_svg]:transform-[rotate(180deg)] motion-reduce:[&_svg]:[transition:none]", className)}
       role="combobox"
       aria-label={ariaLabel ?? fieldLabel ?? props.name ?? "Selecionar opção"}
       aria-haspopup="listbox"
@@ -116,7 +116,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
       <div
         ref={menuRef}
         id={listboxId}
-        className={cx("ui-select__menu", menuClassName)}
+        className={cx("z-1000 w-max p-[0.35rem] overflow-y-auto border border-solid border-line rounded-control bg-surface shadow-panel animate-[ui-menu-in_120ms_ease-out] motion-reduce:animate-none", menuClassName)}
         role="listbox"
         aria-label={ariaLabel ?? fieldLabel ?? props.name ?? "Opções"}
         style={style}
@@ -135,7 +135,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
         key={option.value}
         type="button"
         role="option"
-        className="ui-select__option"
+        className={"ui-select__option flex w-full min-h-[2.4rem] items-center p-[0.55rem_0.65rem] border-0 rounded-lg text-ink bg-transparent font-[inherit] text-[0.84rem] text-left cursor-pointer [&:hover]:[outline:none] [&:hover]:bg-[#e9efeb] focus-visible:[outline:none] focus-visible:bg-[#e9efeb] aria-selected:text-accent-strong aria-selected:bg-[#e3eee8] aria-selected:font-[750] disabled:cursor-not-allowed disabled:opacity-50"}
         aria-selected={option.value === selectedValue}
         disabled={option.disabled}
         onClick={() => selectValue(option.value)}
@@ -147,17 +147,17 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
 
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> { invalid?: boolean }
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea({ className, invalid, ...props }, ref) {
-  return <textarea ref={ref} className={cx("ui-control", "ui-textarea", className)} aria-invalid={invalid || undefined} {...props} />;
+  return <textarea ref={ref} className={cx("ui-control w-full min-h-11 p-[0.65rem_0.75rem] border border-solid border-control-border rounded-control text-ink bg-white font-[inherit] placeholder:text-[#68766f] [&:hover:not(:disabled)]:border-[#9eaaa3] focus:border-accent focus:[outline:3px_solid_var(--color-control-focus)] focus:outline-offset-0 aria-invalid:border-danger disabled:cursor-not-allowed disabled:text-[#748079] disabled:bg-[#eef0ec]", "min-h-22 resize-y", className)} aria-invalid={invalid || undefined} {...props} />;
 });
 
 export const Checkbox = forwardRef<HTMLInputElement, Omit<InputHTMLAttributes<HTMLInputElement>, "type">>(function Checkbox({ className, ...props }, ref) {
-  return <input ref={ref} type="checkbox" className={cx("ui-checkbox", className)} {...props} />;
+  return <input ref={ref} type="checkbox" className={cx("flex-[0_0_1.125rem] w-4.5 h-4.5 min-h-0 p-0 m-0 rounded-[.25rem] accent-accent focus-visible:[outline:3px_solid_var(--color-control-focus)] focus-visible:outline-offset-2", className)} {...props} />;
 });
 
 export function FormField({ label, error, hint, required, htmlFor, children }: { label: string; error?: string; hint?: string; required?: boolean; htmlFor?: string; children: ReactNode }) {
-  return <FieldLabelContext.Provider value={label}><label className="ui-field" {...(htmlFor ? { htmlFor } : {})}><span>{label}{required && <span aria-hidden="true"> *</span>}</span>{children}{error ? <small className="ui-field__error">{error}</small> : hint ? <small className="ui-field__hint">{hint}</small> : null}</label></FieldLabelContext.Provider>;
+  return <FieldLabelContext.Provider value={label}><label className={"ui-field grid gap-[0.4rem] text-muted text-[0.78rem] font-[750]"} {...(htmlFor ? { htmlFor } : {})}><span>{label}{required && <span aria-hidden="true"> *</span>}</span>{children}{error ? <small className={"text-danger"}>{error}</small> : hint ? <small className={"text-muted font-medium"}>{hint}</small> : null}</label></FieldLabelContext.Provider>;
 }
 
 export function CheckboxField({ label, description, children }: { label: string; description?: string; children: ReactNode }) {
-  return <label className="ui-checkbox-field"><span><strong>{label}</strong>{description && <small>{description}</small>}</span>{children}</label>;
+  return <label className={"ui-checkbox-field flex items-center justify-between gap-3 w-full min-h-10 text-ink cursor-pointer [&_>_span]:block [&_>_span]:flex-1 [&_>_span]:min-w-0 [&_small]:block [&_small]:mt-[0.2rem] [&_small]:text-muted [&_small]:text-[0.76rem] [&_small]:font-medium"}><span><strong>{label}</strong>{description && <small>{description}</small>}</span>{children}</label>;
 }

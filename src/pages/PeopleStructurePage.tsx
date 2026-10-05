@@ -33,7 +33,7 @@ export function PeopleStructurePage() {
     {current === 'overview' && <ModuleAnalytics scope={scope} domain="people" periodDays={search.periodDays} onPeriodChange={(periodDays) => void setSearch({ periodDays })} onOpenAttention={(item) => void setSearch({ tab: 'people', page: 1, id: item.entityId })} />}
     {current === 'people' && <People scope={scope} search={search} permissions={branch.foundationPermissions} setSearch={(patch) => void setSearch(patch)} />}
     {current === 'departments' && <Departments scope={scope} search={search} setSearch={(patch) => void setSearch(patch)} />}
-    {current === 'jobs' && <div className="catalog-grid single"><CatalogCard scope={scope} resource="job-functions" title="Cargos" detail="cbo" search={search} setSearch={(patch) => void setSearch(patch)} /></div>}
-    {current === 'suppliers' && <div className="catalog-grid single"><CatalogCard scope={scope} resource="suppliers" title="Empresas prestadoras" detail="tax" search={search} setSearch={(patch) => void setSearch(patch)} /></div>}
+    {current === 'jobs' && <div className={"catalog-grid grid grid-cols-2 gap-4 [&.single]:grid-cols-[minmax(0,1fr)] max-[800px]:grid-cols-[1fr] single"}><CatalogCard scope={scope} resource="job-functions" title="Cargos" detail="cbo" search={search} setSearch={(patch) => void setSearch(patch)} /></div>}
+    {current === 'suppliers' && <div className={"catalog-grid grid grid-cols-2 gap-4 [&.single]:grid-cols-[minmax(0,1fr)] max-[800px]:grid-cols-[1fr] single"}><CatalogCard scope={scope} resource="suppliers" title="Empresas prestadoras" detail="tax" search={search} setSearch={(patch) => void setSearch(patch)} /></div>}
   </CompanyWorkspaceShell>;
 }

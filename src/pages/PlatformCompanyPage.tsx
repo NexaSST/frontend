@@ -83,8 +83,8 @@ function BranchRow({
   });
   if (!editing)
     return (
-      <div className="record-row static">
-        <span className="record-icon">
+      <div className={"record-row grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-[0.8rem] p-[1rem_0.25rem] border-t border-solid border-t-line text-ink no-underline first:border-t-0 [&:not(.static):hover_strong]:text-accent [&_>_span:last-child]:text-muted [&_>_span:last-child]:text-[0.78rem] [&_strong]:block [&_small]:block [&_small]:mt-[0.2rem] [&_small]:text-muted static"}>
+        <span className={"record-icon inline-grid place-items-center w-9 h-9 rounded-[0.65rem] text-accent-strong bg-[#e5eee9]"}>
           <MapPin size={18} />
         </span>
         <span>
@@ -96,25 +96,25 @@ function BranchRow({
         <Button variant="ghost" size="sm" onClick={() => setEditing(true)}>
           <Pencil size={15} /> Editar
         </Button>
-        <Link className="branch-enter-link" to="/workspace/$companyId/$branchId" params={{ companyId, branchId: branch.id }} search={{
+        <Link className={"inline-flex items-center justify-center gap-[0.4rem] min-h-10 p-[0.55rem_0.75rem] border border-solid border-line rounded-control text-accent-strong bg-white text-[0.76rem] font-extrabold no-underline whitespace-nowrap [&:hover]:border-[#93aa9f] [&:hover]:bg-[#f2f7f4] max-[800px]:col-2 max-[800px]:row-1 max-[520px]:col-1 max-[520px]:row-auto max-[520px]:w-full"} to="/workspace/$companyId/$branchId" params={{ companyId, branchId: branch.id }} search={{
           periodDays: 30, categoryId: undefined, activityDomain: undefined, trainingPage: 1, inspectionsPage: 1, aprPage: 1,
         }}>Abrir dashboard <ArrowRight size={15} /></Link>
       </div>
     );
   return (
     <form
-      className="inline-edit"
+      className={"inline-edit grid gap-[0.8rem] p-[1rem_0] border-t border-solid border-t-line"}
       onSubmit={form.handleSubmit((v) => update.mutate(v))}
     >
-      <div className="inline-fields">
+      <div className={"inline-fields grid grid-cols-[minmax(0,1fr)_minmax(6rem,0.45fr)_minmax(9rem,0.7fr)] gap-[0.6rem] [&_label]:grid [&_label]:gap-[0.35rem] [&_label]:text-muted [&_label]:text-[0.75rem] [&_label]:font-[750] [&_input]:w-full [&_input]:min-h-[2.4rem] [&_input]:p-[0.5rem_0.6rem] [&_input]:border [&_input]:border-solid [&_input]:border-control-border [&_input]:rounded-[0.6rem] max-[800px]:grid-cols-[1fr]"}>
         <FormField label="Nome" error={form.formState.errors.name?.message}><Input {...form.register("name")} invalid={Boolean(form.formState.errors.name)} /></FormField>
         <FormField label="Código" error={form.formState.errors.code?.message}><Input {...form.register("code")} invalid={Boolean(form.formState.errors.code)} /></FormField>
         <FormField label="Fuso"><Input {...form.register("timezone")} /></FormField>
       </div>
       {(form.formState.errors.name || form.formState.errors.code) && (
-        <span className="field-error">Revise os campos obrigatórios.</span>
+        <span className={"field-error text-danger text-[0.8rem]"}>Revise os campos obrigatórios.</span>
       )}
-      <div className="form-actions">
+      <div className={"form-actions flex justify-end gap-2"}>
         <Button variant="ghost" size="sm" onClick={() => setEditing(false)}>
           Cancelar
         </Button>
@@ -196,21 +196,21 @@ export function PlatformCompanyPage() {
   });
   const branchRows = branches.data?.rows ?? [];
   return (
-    <div className="workspace">
-      <Link className="back-link" to="/platform">
+    <div className={"workspace w-[min(92vw,82rem)] m-[0_auto] p-[3.5rem_0_5rem] max-[520px]:w-[min(92vw,82rem)] max-[520px]:pt-8"}>
+      <Link className={"back-link inline-flex items-center gap-[0.4rem] mb-8 text-accent-strong font-[720] underline-offset-[0.22em]"} to="/platform">
         <ArrowLeft size={17} /> Voltar ao dashboard Master
       </Link>
       <PageTitle title={company.data?.name ?? `Empresa ${companyId}`} description="Empresas, filiais, contratos e acessos em um único contexto administrativo." meta={<Badge tone="info">Contexto administrativo</Badge>} />
-      <div className="company-management-flow">
-        <section className="content-section">
+      <div className={"grid gap-5"}>
+        <section className={"border border-solid border-line rounded-panel bg-surface shadow-panel min-w-0 p-6 max-[520px]:p-[1.1rem]"}>
           <SectionTitle title="Filiais" description="Listagem paginada; cada unidade pode ser atualizada no próprio contexto." />
           {branches.isLoading && (
-            <p className="empty-state">Carregando filiais…</p>
+            <p className={"empty-state p-[1.5rem_0] text-muted"}>Carregando filiais…</p>
           )}
           {branches.isError && (
-            <p className="error-state">Não foi possível carregar as filiais.</p>
+            <p className={"error-state text-danger text-[0.8rem]"}>Não foi possível carregar as filiais.</p>
           )}
-          <div className="record-list">
+          <div className={"record-list grid"}>
             {branchRows.map((branch) => (
               <BranchRow
                 branch={branch}
@@ -228,15 +228,15 @@ export function PlatformCompanyPage() {
             />
           )}
         </section>
-        <aside className="side-section company-detail-panel">
-          <section className="side-block">
+        <aside className={"side-section [&_p]:max-w-[68ch] [&_p]:mb-0 [&_p]:text-muted [&_p]:leading-[1.6] border border-solid border-line rounded-panel bg-surface shadow-panel grid gap-6 p-6 [&_svg]:text-accent max-[520px]:p-[1.1rem] grid-cols-2 [&_.side-block]:p-0 [&_.side-block]:border-0 [&_.side-block+.side-block]:ps-6 [&_.side-block+.side-block]:border-s [&_.side-block+.side-block]:border-solid [&_.side-block+.side-block]:border-s-line max-[800px]:grid-cols-[1fr] max-[800px]:[&_.side-block+.side-block]:pbs-6 max-[800px]:[&_.side-block+.side-block]:ps-0 max-[800px]:[&_.side-block+.side-block]:[border-block-start:1px_solid_var(--color-line)] max-[800px]:[&_.side-block+.side-block]:border-s-0"}>
+          <section className={"side-block grid gap-[1.2rem] pb-6 border-b border-solid border-b-line last:pb-0 last:border-b-0 [&_>_div_>_svg]:mb-[0.8rem]"}>
             <div>
               <Pencil size={20} />
               <h2>Dados da empresa</h2>
               <p>Alterações administrativas ficam registradas na auditoria.</p>
             </div>
             <form
-              className="form-stack"
+              className={"grid gap-[0.8rem] [&_label]:grid [&_label]:gap-[0.4rem] [&_label]:text-muted [&_label]:text-[0.78rem] [&_label]:font-[750] [&_input:not([type='checkbox']):not([type='hidden'])]:w-full [&_input:not([type='checkbox']):not([type='hidden'])]:min-h-11 [&_input:not([type='checkbox']):not([type='hidden'])]:p-[0.65rem_0.75rem] [&_input:not([type='checkbox']):not([type='hidden'])]:border [&_input:not([type='checkbox']):not([type='hidden'])]:border-solid [&_input:not([type='checkbox']):not([type='hidden'])]:border-control-border [&_input:not([type='checkbox']):not([type='hidden'])]:rounded-control [&_input:not([type='checkbox']):not([type='hidden'])]:text-ink [&_input:not([type='checkbox']):not([type='hidden'])]:bg-white [&_input[aria-invalid='true']]:border-danger [&_.ui-checkbox-field]:flex [&_.ui-checkbox-field]:items-center [&_.ui-checkbox-field]:justify-between [&_.ui-checkbox-field]:gap-3 [&_.ui-checkbox-field]:w-full [&_.ui-checkbox-field]:min-h-10 [&_.ui-checkbox-field]:text-ink [&_.ui-checkbox-field]:cursor-pointer"}
               onSubmit={companyForm.handleSubmit((v) =>
                 updateCompany.mutate(v),
               )}
@@ -248,14 +248,14 @@ export function PlatformCompanyPage() {
               <Button type="submit" loading={updateCompany.isPending}>Salvar empresa</Button>
             </form>
           </section>
-          <section className="side-block">
+          <section className={"side-block grid gap-[1.2rem] pb-6 border-b border-solid border-b-line last:pb-0 last:border-b-0 [&_>_div_>_svg]:mb-[0.8rem]"}>
             <div>
               <Plus size={20} />
               <h2>Nova filial</h2>
               <p>Cadastre a unidade antes de liberar módulos e usuários.</p>
             </div>
             <form
-              className="form-stack"
+              className={"grid gap-[0.8rem] [&_label]:grid [&_label]:gap-[0.4rem] [&_label]:text-muted [&_label]:text-[0.78rem] [&_label]:font-[750] [&_input:not([type='checkbox']):not([type='hidden'])]:w-full [&_input:not([type='checkbox']):not([type='hidden'])]:min-h-11 [&_input:not([type='checkbox']):not([type='hidden'])]:p-[0.65rem_0.75rem] [&_input:not([type='checkbox']):not([type='hidden'])]:border [&_input:not([type='checkbox']):not([type='hidden'])]:border-solid [&_input:not([type='checkbox']):not([type='hidden'])]:border-control-border [&_input:not([type='checkbox']):not([type='hidden'])]:rounded-control [&_input:not([type='checkbox']):not([type='hidden'])]:text-ink [&_input:not([type='checkbox']):not([type='hidden'])]:bg-white [&_input[aria-invalid='true']]:border-danger [&_.ui-checkbox-field]:flex [&_.ui-checkbox-field]:items-center [&_.ui-checkbox-field]:justify-between [&_.ui-checkbox-field]:gap-3 [&_.ui-checkbox-field]:w-full [&_.ui-checkbox-field]:min-h-10 [&_.ui-checkbox-field]:text-ink [&_.ui-checkbox-field]:cursor-pointer"}
               onSubmit={createForm.handleSubmit((v) => createBranch.mutate(v))}
             >
               <FormField label="Nome" error={createForm.formState.errors.name?.message}><Input {...createForm.register("name")} invalid={Boolean(createForm.formState.errors.name)} /></FormField>

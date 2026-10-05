@@ -48,16 +48,16 @@ export function WorkPermitWizard({ editor, onClose, canAuthorize }: {
   return <WorkflowModal title={detail.data ? "Editar PT" : "Nova Permissão de Trabalho"}
     description="Prepare o trabalho, vincule uma APR se houver, confirme a equipe e revise antes da autorização."
     focusKey={step} onClose={close}
-    footer={<div className="flex w-full flex-wrap items-center justify-between gap-3">
+    footer={<div className={"flex w-full flex-wrap items-center justify-between gap-3"}>
       <div>{step > 1 && <Button type="button" variant="ghost" disabled={busy} onClick={() => void persist(step - 1)}>Voltar</Button>}</div>
-      <div className="flex flex-wrap items-center gap-2">
+      <div className={"flex flex-wrap items-center gap-2"}>
         <Button type="button" variant="secondary" disabled={busy} onClick={() => void persist(step, true)}>{save.isPending ? "Salvando…" : "Salvar rascunho"}</Button>
         {step < 4 ? <Button type="button" disabled={busy} onClick={() => void persist(step + 1)}>Continuar</Button>
           : canAuthorize ? <Button type="button" disabled={busy || issues.length > 0 || form.formState.isDirty || !detail.data} onClick={finish}>{authorize.isPending ? "Autorizando…" : "Autorizar PT"}</Button> : null}
       </div>
     </div>}>
-    <div className="space-y-6"><WorkflowStepper steps={steps} current={step} onStep={(target) => void persist(target)} />
-      {message && <p role="alert" className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-950">{message}</p>}
+    <div className={"space-y-6"}><WorkflowStepper steps={steps} current={step} onStep={(target) => void persist(target)} />
+      {message && <p role="alert" className={"rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-950"}>{message}</p>}
       {step === 1 && <PermitWorkStep editor={editor} />}
       {step === 2 && <PermitAprStep editor={editor} />}
       {step === 3 && <PermitPeopleStep editor={editor} />}

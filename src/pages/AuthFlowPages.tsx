@@ -5,10 +5,10 @@ import { Button, Input } from '../components/ui/index.js';
 import { apiJson } from '../lib/api.js';
 
 function Frame({ title, description, children }: { title: string; description: string; children: ReactNode }) {
-  return <main className="account-flow"><div className="account-flow__panel">
-    <Link className="account-flow__brand" to="/login" search={{ redirect: undefined }}><img src="/brand/nexasst-symbol-flat.png" alt="" width="42" height="42" />NexaSST</Link>
+  return <main className={"grid min-h-dvh place-items-center p-6 bg-canvas"}><div className={"w-[min(100%,31rem)] p-[clamp(1.5rem,4vw,2.75rem)] border border-solid border-line rounded-panel bg-surface [&_h1]:m-[0_0_0.75rem] [&_h1]:text-[clamp(1.8rem,4vw,2.4rem)] [&_h1]:tracking-[-0.03em] [&_>_p]:m-[0_0_1.75rem] [&_>_p]:text-muted [&_>_p]:leading-[1.6] [&_>_button]:w-full [&_>_button]:mb-3"}>
+    <Link className={"flex items-center gap-2 w-fit mb-8 text-ink font-extrabold text-[1.25rem] no-underline"} to="/login" search={{ redirect: undefined }}><img src="/brand/nexasst-symbol-flat.png" alt="" width="42" height="42" />NexaSST</Link>
     <h1>{title}</h1><p>{description}</p>{children}
-    <Link className="account-flow__back" to="/login" search={{ redirect: undefined }}>Voltar ao login</Link>
+    <Link className={"block w-fit mt-6 text-accent-strong underline underline-offset-[0.2em] focus-visible:[outline:3px_solid_var(--color-accent)] focus-visible:outline-offset-[3px]"} to="/login" search={{ redirect: undefined }}>Voltar ao login</Link>
   </div></main>;
 }
 export function ActivatePage() {
@@ -46,14 +46,14 @@ export function ActivatePage() {
     : ticket ? 'Sua identidade Microsoft foi confirmada. Crie também uma senha NexaSST para o acesso local e assinaturas.'
       : preview ? `Convite de ${preview.companyName} para ${preview.email}.` : 'Abra o link recebido por e-mail para continuar.'}>
     {!done && (ticket || preview) && <>
-      {preview?.microsoftAvailable && <><Button type="button" variant="secondary" onClick={microsoft} disabled={busy}>Continuar com Microsoft</Button><p className="account-flow__hint">Sua conta Microsoft será vinculada após você criar uma senha NexaSST.</p></>}
-      <form className="form-stack" onSubmit={activate}>
+      {preview?.microsoftAvailable && <><Button type="button" variant="secondary" onClick={microsoft} disabled={busy}>Continuar com Microsoft</Button><p className={"text-muted text-[0.86rem] leading-[1.55]"}>Sua conta Microsoft será vinculada após você criar uma senha NexaSST.</p></>}
+      <form className={"grid gap-[0.8rem] [&_label]:grid [&_label]:gap-[0.4rem] [&_label]:text-muted [&_label]:text-[0.78rem] [&_label]:font-[750] [&_input:not([type='checkbox']):not([type='hidden'])]:w-full [&_input:not([type='checkbox']):not([type='hidden'])]:min-h-11 [&_input:not([type='checkbox']):not([type='hidden'])]:p-[0.65rem_0.75rem] [&_input:not([type='checkbox']):not([type='hidden'])]:border [&_input:not([type='checkbox']):not([type='hidden'])]:border-solid [&_input:not([type='checkbox']):not([type='hidden'])]:border-control-border [&_input:not([type='checkbox']):not([type='hidden'])]:rounded-control [&_input:not([type='checkbox']):not([type='hidden'])]:text-ink [&_input:not([type='checkbox']):not([type='hidden'])]:bg-white [&_input[aria-invalid='true']]:border-danger [&_.ui-checkbox-field]:flex [&_.ui-checkbox-field]:items-center [&_.ui-checkbox-field]:justify-between [&_.ui-checkbox-field]:gap-3 [&_.ui-checkbox-field]:w-full [&_.ui-checkbox-field]:min-h-10 [&_.ui-checkbox-field]:text-ink [&_.ui-checkbox-field]:cursor-pointer"} onSubmit={activate}>
         <label>Senha NexaSST<Input type="password" autoComplete="new-password" value={password} minLength={12} maxLength={1024} required onChange={(event) => setPassword(event.target.value)} /></label>
-        <p className="account-flow__hint">Use pelo menos 12 caracteres.</p>
+        <p className={"text-muted text-[0.86rem] leading-[1.55]"}>Use pelo menos 12 caracteres.</p>
         <Button type="submit" loading={busy}>Ativar conta</Button>
       </form>
     </>}
-    {error && <p className="error-state" role="alert">{error}</p>}
+    {error && <p className={"error-state text-danger text-[0.8rem]"} role="alert">{error}</p>}
   </Frame>;
 }
 
@@ -79,7 +79,7 @@ export function ForgotPasswordPage() {
     finally { setBusy(false); }
   }
   return <Frame title="Recuperar senha" description={done ? 'Se o e-mail estiver cadastrado, enviaremos um link para redefinir a senha.' : 'Informe o e-mail da sua conta NexaSST.'}>
-    {!done && <form className="form-stack" onSubmit={submit}><label>E-mail<Input type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} /></label><Button type="submit" loading={busy}>Enviar link</Button></form>}
+    {!done && <form className={"grid gap-[0.8rem] [&_label]:grid [&_label]:gap-[0.4rem] [&_label]:text-muted [&_label]:text-[0.78rem] [&_label]:font-[750] [&_input:not([type='checkbox']):not([type='hidden'])]:w-full [&_input:not([type='checkbox']):not([type='hidden'])]:min-h-11 [&_input:not([type='checkbox']):not([type='hidden'])]:p-[0.65rem_0.75rem] [&_input:not([type='checkbox']):not([type='hidden'])]:border [&_input:not([type='checkbox']):not([type='hidden'])]:border-solid [&_input:not([type='checkbox']):not([type='hidden'])]:border-control-border [&_input:not([type='checkbox']):not([type='hidden'])]:rounded-control [&_input:not([type='checkbox']):not([type='hidden'])]:text-ink [&_input:not([type='checkbox']):not([type='hidden'])]:bg-white [&_input[aria-invalid='true']]:border-danger [&_.ui-checkbox-field]:flex [&_.ui-checkbox-field]:items-center [&_.ui-checkbox-field]:justify-between [&_.ui-checkbox-field]:gap-3 [&_.ui-checkbox-field]:w-full [&_.ui-checkbox-field]:min-h-10 [&_.ui-checkbox-field]:text-ink [&_.ui-checkbox-field]:cursor-pointer"} onSubmit={submit}><label>E-mail<Input type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} /></label><Button type="submit" loading={busy}>Enviar link</Button></form>}
   </Frame>;
 }
 
@@ -93,8 +93,8 @@ export function ResetPasswordPage() {
     finally { setBusy(false); }
   }
   return <Frame title="Nova senha" description={done ? 'Senha atualizada. Entre novamente em sua conta.' : 'Crie uma senha NexaSST com pelo menos 12 caracteres.'}>
-    {!done && token && <form className="form-stack" onSubmit={submit}><label>Nova senha<Input type="password" autoComplete="new-password" minLength={12} maxLength={1024} required value={password} onChange={(event) => setPassword(event.target.value)} /></label><Button type="submit" loading={busy}>Salvar nova senha</Button></form>}
-    {!token && <p className="error-state">Link inválido.</p>}
+    {!done && token && <form className={"grid gap-[0.8rem] [&_label]:grid [&_label]:gap-[0.4rem] [&_label]:text-muted [&_label]:text-[0.78rem] [&_label]:font-[750] [&_input:not([type='checkbox']):not([type='hidden'])]:w-full [&_input:not([type='checkbox']):not([type='hidden'])]:min-h-11 [&_input:not([type='checkbox']):not([type='hidden'])]:p-[0.65rem_0.75rem] [&_input:not([type='checkbox']):not([type='hidden'])]:border [&_input:not([type='checkbox']):not([type='hidden'])]:border-solid [&_input:not([type='checkbox']):not([type='hidden'])]:border-control-border [&_input:not([type='checkbox']):not([type='hidden'])]:rounded-control [&_input:not([type='checkbox']):not([type='hidden'])]:text-ink [&_input:not([type='checkbox']):not([type='hidden'])]:bg-white [&_input[aria-invalid='true']]:border-danger [&_.ui-checkbox-field]:flex [&_.ui-checkbox-field]:items-center [&_.ui-checkbox-field]:justify-between [&_.ui-checkbox-field]:gap-3 [&_.ui-checkbox-field]:w-full [&_.ui-checkbox-field]:min-h-10 [&_.ui-checkbox-field]:text-ink [&_.ui-checkbox-field]:cursor-pointer"} onSubmit={submit}><label>Nova senha<Input type="password" autoComplete="new-password" minLength={12} maxLength={1024} required value={password} onChange={(event) => setPassword(event.target.value)} /></label><Button type="submit" loading={busy}>Salvar nova senha</Button></form>}
+    {!token && <p className={"error-state text-danger text-[0.8rem]"}>Link inválido.</p>}
   </Frame>;
 }
 
@@ -108,10 +108,10 @@ export function MicrosoftAccountPage() {
     try { const result = await apiJson<{ authorizationUrl: string }>('v1/auth/microsoft/link/start', { method: 'post', json: {} }); window.location.assign(result.authorizationUrl); }
     catch { sileo.error({ title: 'Não foi possível vincular a conta Microsoft' }); setBusy(false); }
   }
-  return <div className="workspace"><section className="content-section account-link-section"><h1>Conta Microsoft</h1>
+  return <div className={"workspace w-[min(92vw,82rem)] m-[0_auto] p-[3.5rem_0_5rem] max-[520px]:w-[min(92vw,82rem)] max-[520px]:pt-8"}><section className={"border border-solid border-line rounded-panel bg-surface shadow-panel min-w-0 p-6 max-[520px]:p-[1.1rem] max-w-172 [&_.ui-button]:mt-3"}><h1>Conta Microsoft</h1>
     <p>{status?.linked ? 'Sua conta Microsoft está vinculada ao NexaSST.' : status?.available ? 'Vincule a conta Microsoft ao seu acesso já autorizado.' : 'O login Microsoft ainda não foi ativado para sua empresa.'}</p>
     {status?.available && !status.linked && <Button onClick={link} loading={busy}>Vincular conta Microsoft</Button>}
-    <p className="account-flow__hint">Sua senha NexaSST continua disponível para acesso e assinatura de APRs.</p>
+    <p className={"text-muted text-[0.86rem] leading-[1.55]"}>Sua senha NexaSST continua disponível para acesso e assinatura de APRs.</p>
     <Button variant="secondary" onClick={async () => { try { await apiJson('v1/auth/email/resend', { method: 'post' }); sileo.success({ title: 'Link de confirmação enviado' }); } catch { sileo.error({ title: 'Não foi possível enviar o link' }); } }}>Reenviar confirmação de e-mail</Button>
   </section></div>;
 }

@@ -113,10 +113,10 @@ export function AccessManager({
     onSuccess: (result) => setToken(result.token),
   });
   return (
-    <section className="admin-section">
+    <section className={"admin-section min-w-0 border border-solid border-line rounded-panel bg-surface shadow-panel mt-4 p-6 max-[520px]:p-[0.85rem]"}>
       <SectionTitle title="Convites e funções" description="A função define o que cada pessoa pode fazer. O escopo define se o acesso vale para a empresa inteira ou somente para uma filial." />
       {token && (
-        <div className="token-callout">
+        <div className={"token-callout flex items-center justify-between gap-4 mb-4 p-[0.9rem_1rem] border border-solid border-[#b8cec4] rounded-control bg-[#e9f3ee] [&_code]:block [&_code]:max-w-[55vw] [&_code]:mt-[0.35rem] [&_code]:wrap-anywhere max-[520px]:items-start max-[520px]:flex-col"}>
           <div>
             <strong>Link de ativação exibido uma única vez</strong>
             <code>{`${window.location.origin}/activate?token=${encodeURIComponent(token)}`}</code>
@@ -130,9 +130,9 @@ export function AccessManager({
           </Button>
         </div>
       )}
-      <div className="admin-grid">
+      <div className={"admin-grid grid grid-cols-[minmax(20rem,0.4fr)_minmax(0,1fr)] gap-6 items-start max-[800px]:grid-cols-[1fr]"}>
         <form
-          className="admin-form"
+          className={"admin-form grid min-w-0 gap-3 p-4 border border-solid border-line rounded-control bg-[#f8f8f4] [&_.ui-field]:min-w-0 [&_.form-row]:min-w-0 [&_.form-row_>_*]:min-w-0 [&_.ui-control]:min-w-0 [&_.ui-control]:max-w-full"}
           onSubmit={form.handleSubmit((v) => invite.mutate(v))}
         >
           <h3>Novo convite</h3>
@@ -163,7 +163,7 @@ export function AccessManager({
           </Field>
           <Button type="submit" loading={invite.isPending}>Enviar convite</Button>
         </form>
-        <div className="admin-table">
+        <div className={"admin-table min-w-0"}>
           <ListToolbar
             value={q}
             onChange={(value) => {
@@ -180,7 +180,7 @@ export function AccessManager({
                   <small>{a.email}</small>
                 </span>,
                 <StatusBadge value={a.status} />,
-                <div className="role-stack">
+                <div className={"role-stack flex flex-wrap gap-[0.3rem] [&_>_span]:grid [&_>_span]:gap-[0.15rem] [&_>_span]:p-[0.35rem_0.5rem] [&_>_span]:rounded-[0.4rem] [&_>_span]:bg-[#ecefe9] [&_>_span]:text-[0.76rem] [&_>_span]:font-bold [&_small]:text-muted [&_small]:text-[0.68rem] [&_small]:font-semibold"}>
                   {a.roles.map((role) => (
                     <span key={role.id}>
                       {roleLabels[role.roleCode] ?? role.roleCode}

@@ -94,11 +94,11 @@ export function ContractsManager({
     return (!status || contract.status === status) && (!query || `${moduleName} ${branchName}`.toLocaleLowerCase("pt-BR").includes(query));
   });
   return (
-    <section className="admin-section">
+    <section className={"admin-section min-w-0 border border-solid border-line rounded-panel bg-surface shadow-panel mt-4 p-6 max-[520px]:p-[0.85rem]"}>
       <SectionTitle title="Contratos de módulos" description="Liberações podem valer para a empresa inteira ou somente para uma filial." />
-      <div className="admin-grid">
+      <div className={"admin-grid grid grid-cols-[minmax(20rem,0.4fr)_minmax(0,1fr)] gap-6 items-start max-[800px]:grid-cols-[1fr]"}>
         <form
-          className="admin-form"
+          className={"admin-form grid min-w-0 gap-3 p-4 border border-solid border-line rounded-control bg-[#f8f8f4] [&_.ui-field]:min-w-0 [&_.form-row]:min-w-0 [&_.form-row_>_*]:min-w-0 [&_.ui-control]:min-w-0 [&_.ui-control]:max-w-full"}
           onSubmit={form.handleSubmit((v) => create.mutate(v))}
         >
           <h3>Novo contrato</h3>
@@ -128,7 +128,7 @@ export function ContractsManager({
               ))}
             </Select>
           </Field>
-          <div className="form-row">
+          <div className={"form-row grid grid-cols-[1fr_1fr] gap-[0.65rem] max-[520px]:grid-cols-[1fr]"}>
             <Field label="Início">
               <Input type="datetime-local" {...form.register("startsAt")} />
             </Field>
@@ -141,7 +141,7 @@ export function ContractsManager({
           </Field>
           <Button type="submit" loading={create.isPending}>Criar contrato</Button>
         </form>
-        <div className="admin-table">
+        <div className={"admin-table min-w-0"}>
           <ListToolbar value={q} onChange={setQ}>
             <Select aria-label="Filtrar contratos por situação" value={status} onChange={(event) => setStatus(event.target.value)}>
               <option value="">Todas as situações</option>
@@ -165,7 +165,7 @@ export function ContractsManager({
               keyOf={(i) => visibleContracts[i]!.id}
               renderActions={(i) => {
                 const row = visibleContracts[i]!;
-                return <DropdownMenu label="Ações"><DropdownItem onClick={() => change.mutate({ id: row.id, status: row.status === "active" ? "suspended" : "active" })}>{row.status === "active" ? "Suspender contrato" : "Reativar contrato"}</DropdownItem>{row.status !== "expired" && <DropdownItem className="danger" onClick={() => change.mutate({ id: row.id, status: "expired" })}>Encerrar contrato</DropdownItem>}</DropdownMenu>;
+                return <DropdownMenu label="Ações"><DropdownItem onClick={() => change.mutate({ id: row.id, status: row.status === "active" ? "suspended" : "active" })}>{row.status === "active" ? "Suspender contrato" : "Reativar contrato"}</DropdownItem>{row.status !== "expired" && <DropdownItem className={"danger"} onClick={() => change.mutate({ id: row.id, status: "expired" })}>Encerrar contrato</DropdownItem>}</DropdownMenu>;
               }}
             />
             <PagedFooter data={contracts.data} onPage={setPage} />
