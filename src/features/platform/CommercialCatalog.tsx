@@ -27,7 +27,7 @@ function TierEditor({ tier }: { tier: PricingTier }) {
     onSuccess: async (data) => { qc.setQueryData(commercialCatalogQuery.queryKey, data); sileo.success({ title: "Faixa de preço atualizada" }); },
     onError: () => sileo.error({ title: "Não foi possível atualizar a faixa" }),
   });
-  return <form className="pricing-row" onSubmit={(event) => { event.preventDefault(); save.mutate(); }}>
+  return <form className={"pricing-row grid grid-cols-[minmax(8rem,0.55fr)_minmax(8rem,0.4fr)_minmax(6rem,0.3fr)_minmax(14rem,1fr)_minmax(8rem,0.35fr)_auto] items-end gap-[0.55rem] p-[0.75rem_0] border-t border-solid border-t-line first-of-type:border-t-0 max-[800px]:grid-cols-[1fr]"} onSubmit={(event) => { event.preventDefault(); save.mutate(); }}>
     <FormField label="Plano"><Input value={name} onChange={(event) => setName(event.target.value)} required /></FormField>
     <FormField label="Mensalidade (R$)"><Input type="number" min="0.01" step="0.01" value={price} onChange={(event) => setPrice(event.target.value)} required /></FormField>
     <FormField label="Limite"><Input type="number" min="1" value={quotaLimit} onChange={(event) => setQuotaLimit(event.target.value)} placeholder="Sem limite" /></FormField>
@@ -55,14 +55,14 @@ function NewTierForm({ moduleCode }: { moduleCode: string }) {
     onError: () => sileo.error({ title: "Não foi possível criar a faixa" }),
   });
   if (!open) return <Button variant="secondary" size="sm" onClick={() => setOpen(true)}>Adicionar faixa</Button>;
-  return <form className="new-tier-form" onSubmit={(event) => { event.preventDefault(); create.mutate(); }}>
+  return <form className={"new-tier-form grid grid-cols-3 gap-[0.65rem] mt-[0.8rem] pt-[0.8rem] border-t border-solid border-t-line [&_.form-actions]:col-span-full"} onSubmit={(event) => { event.preventDefault(); create.mutate(); }}>
     <FormField label="Código"><Input value={code} onChange={(event) => setCode(event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))} placeholder="ex.: enterprise" required /></FormField>
     <FormField label="Nome"><Input value={name} onChange={(event) => setName(event.target.value)} required /></FormField>
     <FormField label="Mensalidade (R$)"><Input type="number" min="0.01" step="0.01" value={price} onChange={(event) => setPrice(event.target.value)} required /></FormField>
     <FormField label="Métrica"><Input value={quotaMetric} onChange={(event) => setQuotaMetric(event.target.value)} placeholder="ex.: collaborators" /></FormField>
     <FormField label="Limite"><Input type="number" min="1" value={quotaLimit} onChange={(event) => setQuotaLimit(event.target.value)} /></FormField>
     <FormField label="O que inclui"><Input value={description} onChange={(event) => setDescription(event.target.value)} required /></FormField>
-    <div className="form-actions"><Button variant="ghost" size="sm" onClick={() => setOpen(false)}>Cancelar</Button><Button type="submit" size="sm" loading={create.isPending}>Criar faixa</Button></div>
+    <div className={"form-actions flex justify-end gap-2"}><Button variant="ghost" size="sm" onClick={() => setOpen(false)}>Cancelar</Button><Button type="submit" size="sm" loading={create.isPending}>Criar faixa</Button></div>
   </form>;
 }
 
@@ -76,15 +76,15 @@ function ModuleCatalogCard({ module }: { module: CommercialModule }) {
     onSuccess: (data) => { qc.setQueryData(commercialCatalogQuery.queryKey, data); sileo.success({ title: "Módulo atualizado" }); },
     onError: () => sileo.error({ title: "Não foi possível atualizar o módulo" }),
   });
-  return <article className="commercial-card">
+  return <article className={"commercial-card min-w-0 p-[1.35rem_0] border-t border-solid border-t-line first:border-t-0 first:pt-0 [&_>_header]:flex [&_>_header]:items-start [&_>_header]:justify-between [&_>_header]:gap-4 [&_>_header]:mb-4 [&_h3]:m-[0_0_0.2rem] [&_code]:text-muted [&_code]:text-[0.78rem]"}>
     <header><div><h3>{module.name}</h3><code>{module.code}</code></div><Badge tone={toneForStatus(module.commercialStatus)}>{labelForStatus(module.commercialStatus)}</Badge></header>
-    <form className="catalog-settings" onSubmit={(event) => { event.preventDefault(); save.mutate(); }}>
+    <form className={"catalog-settings grid grid-cols-[minmax(12rem,0.8fr)_minmax(10rem,0.35fr)_minmax(18rem,1.4fr)_auto] items-end gap-[0.65rem] max-[800px]:grid-cols-[1fr]"} onSubmit={(event) => { event.preventDefault(); save.mutate(); }}>
       <FormField label="Nome comercial"><Input value={name} onChange={(event) => setName(event.target.value)} /></FormField>
       <FormField label="Disponibilidade"><Select value={commercialStatus} onChange={(event) => setCommercialStatus(event.target.value as CommercialModule["commercialStatus"])}><option value="available">Disponível</option><option value="inactive">Inativo</option><option value="future">Futuro</option></Select></FormField>
       <FormField label="Descrição"><Textarea rows={2} value={description} onChange={(event) => setDescription(event.target.value)} /></FormField>
       <Button type="submit" variant="secondary" size="sm" loading={save.isPending}>Salvar módulo</Button>
     </form>
-    <div className="pricing-list"><h4>Faixas de preço</h4>{module.pricingTiers.map((tier) => <TierEditor key={tier.id} tier={tier} />)}{!module.pricingTiers.length && <p className="empty-state">Nenhuma faixa cadastrada.</p>}<NewTierForm moduleCode={module.code} /></div>
+    <div className={"pricing-list mt-[1.1rem] p-4 rounded-control bg-[#f3f4ef] [&_h4]:m-[0_0_0.8rem]"}><h4>Faixas de preço</h4>{module.pricingTiers.map((tier) => <TierEditor key={tier.id} tier={tier} />)}{!module.pricingTiers.length && <p className={"empty-state p-[1.5rem_0] text-muted"}>Nenhuma faixa cadastrada.</p>}<NewTierForm moduleCode={module.code} /></div>
   </article>;
 }
 
@@ -102,25 +102,25 @@ function ComboEditor({ combo, modules }: { combo: ComboOffer; modules: Commercia
     onError: () => sileo.error({ title: "Não foi possível atualizar o combo" }),
   });
   const submit = (event: FormEvent) => { event.preventDefault(); save.mutate(); };
-  return <form className="combo-card" onSubmit={submit}>
+  return <form className={"combo-card [&_>_header]:flex [&_>_header]:items-start [&_>_header]:justify-between [&_>_header]:gap-4 [&_>_header]:mb-4 [&_h3]:m-[0_0_0.2rem] grid [align-content:start] gap-[0.65rem] min-w-0 ps-5 border-s border-solid border-s-line first:ps-0 first:border-s-0 [&_header_strong]:text-accent-strong [&_header_strong]:text-[0.85rem] max-[800px]:p-[1rem_0_0] max-[800px]:border-0 max-[800px]:border-t max-[800px]:border-solid max-[800px]:border-t-line max-[800px]:first:p-[1rem_0_0] max-[800px]:first:border-0 max-[800px]:first:border-t max-[800px]:first:border-solid max-[800px]:first:border-t-line"} onSubmit={submit}>
     <header><div><h3>{combo.name}</h3><strong>{brl(combo.monthlyPriceCents)}/mês</strong></div><Badge tone={toneForStatus(combo.status)}>{labelForStatus(combo.status)}</Badge></header>
     <FormField label="Nome"><Input value={name} onChange={(event) => setName(event.target.value)} /></FormField>
     <FormField label="Soma avulsa (R$)"><Input type="number" min="0.01" step="0.01" value={listPrice} onChange={(event) => setListPrice(event.target.value)} /></FormField>
     <FormField label="Mensalidade (R$)"><Input type="number" min="0.01" step="0.01" value={price} onChange={(event) => setPrice(event.target.value)} /></FormField>
     <FormField label="Descrição"><Textarea rows={2} value={description} onChange={(event) => setDescription(event.target.value)} /></FormField>
     <FormField label="Situação"><Select value={status} onChange={(event) => setStatus(event.target.value as ComboOffer["status"])}><option value="active">Ativo</option><option value="inactive">Inativo</option></Select></FormField>
-    <fieldset className="combo-modules"><legend>Módulos incluídos</legend>{modules.filter((module) => module.commercialStatus !== "future").map((module) => <CheckboxField key={module.code} label={module.name}><Checkbox checked={moduleCodes.includes(module.code)} onChange={(event) => setModuleCodes((current) => event.target.checked ? [...current, module.code] : current.filter((code) => code !== module.code))} /></CheckboxField>)}</fieldset>
+    <fieldset className={"combo-modules grid gap-[0.45rem] m-0 p-0 border-0 [&_legend]:mb-[0.4rem] [&_legend]:text-muted [&_legend]:text-[0.78rem] [&_legend]:font-[750]"}><legend>Módulos incluídos</legend>{modules.filter((module) => module.commercialStatus !== "future").map((module) => <CheckboxField key={module.code} label={module.name}><Checkbox checked={moduleCodes.includes(module.code)} onChange={(event) => setModuleCodes((current) => event.target.checked ? [...current, module.code] : current.filter((code) => code !== module.code))} /></CheckboxField>)}</fieldset>
     <Button type="submit" size="sm" loading={save.isPending}>Salvar combo</Button>
   </form>;
 }
 
 export function CommercialCatalogManager() {
   const query = useQuery(commercialCatalogQuery);
-  return <section className="admin-section commercial-catalog">
+  return <section className={"admin-section min-w-0 border border-solid border-line rounded-panel bg-surface shadow-panel p-6 max-[520px]:p-[0.85rem] commercial-catalog mt-5"}>
     <SectionTitle title="Catálogo comercial" description="Controle a disponibilidade dos módulos, suas faixas de uso e os combos oferecidos. Alterações não concedem permissões automaticamente." />
     <QueryState loading={query.isLoading} error={query.isError}>
-      <div className="commercial-module-list">{query.data?.modules.map((module) => <ModuleCatalogCard key={module.code} module={module} />)}</div>
-      <div className="combo-section"><h3>Combos do ecossistema</h3><div className="combo-grid">{query.data?.combos.map((combo) => <ComboEditor key={combo.id} combo={combo} modules={query.data!.modules} />)}</div></div>
+      <div className={"commercial-module-list grid"}>{query.data?.modules.map((module) => <ModuleCatalogCard key={module.code} module={module} />)}</div>
+      <div className={"combo-section [&_h3]:m-[0_0_0.2rem] mt-[1.8rem] pt-6 border-t border-solid border-t-line"}><h3>Combos do ecossistema</h3><div className={"combo-grid grid grid-cols-3 gap-5 max-[800px]:grid-cols-[1fr]"}>{query.data?.combos.map((combo) => <ComboEditor key={combo.id} combo={combo} modules={query.data!.modules} />)}</div></div>
     </QueryState>
   </section>;
 }

@@ -22,18 +22,18 @@ export function AuthenticatedLayout() {
   }
 
   return (
-    <div className="app-frame">
-      <header className="app-header">
-        <Link className="brand" to={session.kind === 'platform' ? '/platform' : '/app'}>
-          <span className="brand-mark" aria-hidden="true"><ShieldCheck size={19} /></span>
+    <div className={"app-frame min-h-screen"}>
+      <header className={"app-header sticky top-0 z-10 flex items-center justify-between min-h-18 p-[0_4vw] border-b border-solid border-b-line bg-[rgb(244_242_236/94%)] [backdrop-filter:blur(12px)] max-[520px]:p-[0_1rem]"}>
+        <Link className={"brand inline-flex items-center gap-[0.65rem] text-ink font-[760] tracking-tight no-underline"} to={session.kind === 'platform' ? '/platform' : '/app'}>
+          <span className={"brand-mark inline-grid place-items-center w-8 h-8 rounded-[0.6rem] text-white bg-accent [&.large]:w-12 [&.large]:h-12 [&.large]:rounded-[0.85rem]"} aria-hidden="true"><ShieldCheck size={19} /></span>
           <span>NexaSST</span>
         </Link>
-        <div className="session-summary">
-          <span className="session-scope"><Building2 size={16} />{session.kind === 'platform' ? 'Plataforma Master' : session.context.company.name}</span>
+        <div className={"session-summary flex items-center gap-[0.85rem]"}>
+          <span className={"session-scope inline-flex items-center gap-[0.4rem] text-[0.875rem] font-bold max-[520px]:hidden"}><Building2 size={16} />{session.kind === 'platform' ? 'Plataforma Master' : session.context.company.name}</span>
           <AccountMenu session={session} onSignOut={signOut} />
         </div>
       </header>
-      <main className="app-content"><Outlet /></main>
+      <main className={"app-content w-full"}><Outlet /></main>
     </div>
   );
 }

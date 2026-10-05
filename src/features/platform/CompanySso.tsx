@@ -16,22 +16,22 @@ export function CompanySso({ companyId }: { companyId: string }) {
     onSuccess: async () => { await qc.invalidateQueries({ queryKey: ['company-sso', companyId] }); sileo.success({ title: 'Login Microsoft ativado' }); },
     onError: () => sileo.error({ title: 'Não foi possível ativar o login Microsoft' }) });
   function submit(event: FormEvent) { event.preventDefault(); configure.mutate(); }
-  return <section className="content-section company-sso">
+  return <section className={"border border-solid border-line rounded-panel bg-surface shadow-panel min-w-0 p-6 max-[520px]:p-[1.1rem] mt-5 [&_code]:wrap-anywhere"}>
     <SectionTitle title="Login Microsoft" description="Associe um tenant Entra a esta empresa. Cada pessoa mantém os papéis e filiais concedidos no NexaSST." />
     {status.isLoading && <p>Carregando configuração…</p>}
-    {status.isError && <p className="error-state">Não foi possível consultar o login Microsoft.</p>}
+    {status.isError && <p className={"error-state text-danger text-[0.8rem]"}>Não foi possível consultar o login Microsoft.</p>}
     {status.data && <>
       <p><strong>Estado:</strong> {status.data.status === 'active' ? 'Ativo' : status.data.status === 'pending' ? 'Pendente de ativação' : 'Não configurado'}</p>
       {status.data.tenantId && <p><strong>Tenant atual:</strong> <code>{status.data.tenantId}</code></p>}
-      {!status.data.configured && <p className="account-flow__hint">Configure o aplicativo Entra e o segredo no servidor para liberar este recurso.</p>}
+      {!status.data.configured && <p className={"text-muted text-[0.86rem] leading-[1.55]"}>Configure o aplicativo Entra e o segredo no servidor para liberar este recurso.</p>}
       {status.data.configured && <>
-        <form className="company-sso__form" onSubmit={submit}>
+        <form className={"flex items-end gap-3 flex-wrap m-[1rem_0] [&_label]:grid [&_label]:gap-[0.4rem] [&_label]:flex-[1_1_18rem] [&_label]:text-[0.86rem] [&_label]:font-bold"} onSubmit={submit}>
           <label>ID do tenant Microsoft Entra<Input value={tenantId} onChange={(event) => setTenantId(event.target.value)}
             placeholder="00000000-0000-0000-0000-000000000000" required pattern="[0-9a-fA-F-]{36}" /></label>
           <Button type="submit" loading={configure.isPending}>{status.data.tenantId ? 'Alterar tenant' : 'Salvar tenant'}</Button>
         </form>
-        <p className="account-flow__hint">Ao trocar o tenant, vínculos Microsoft e sessões desta empresa são revogados. Os usuários continuam com a senha NexaSST.</p>
-        {status.data.status === 'pending' && <div className="company-sso__activation">
+        <p className={"text-muted text-[0.86rem] leading-[1.55]"}>Ao trocar o tenant, vínculos Microsoft e sessões desta empresa são revogados. Os usuários continuam com a senha NexaSST.</p>
+        {status.data.status === 'pending' && <div className={"max-w-3xl mt-5 pt-5 border-t border-solid border-t-line"}>
           <p>Antes de ativar, confirme no Entra: aplicativo multiempresa, URI de retorno <code>/v1/auth/microsoft/callback</code>, consentimento de TI e ID do tenant acima.</p>
           <Button onClick={() => activate.mutate()} loading={activate.isPending}>Confirmar e ativar</Button>
         </div>}

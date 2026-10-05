@@ -14,7 +14,7 @@ interface Props {
 }
 
 export function AprTemplatePicker({ nr, nrs, templates, selectedVersionId, onNrChange, onVersionChange, onVersionSelect, invalid }: Props) {
-  return <div className="apr-template-filters">
+  return <div className={"grid grid-cols-[minmax(0,1fr)_10rem] gap-[.65rem] max-[640px]:grid-cols-[1fr]"}>
     <Field label={`Template · ${templates.length} disponíveis`} error={invalid ? "Selecione um template" : undefined}>
       <Combobox label="Template" value={selectedVersionId}
         options={templates.map((template) => ({

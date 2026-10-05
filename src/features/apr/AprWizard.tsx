@@ -43,13 +43,13 @@ export function AprWizard({ data, onClose, canFinalize }: { data: Context; onClo
   return <WorkflowModal title={detail.data ? "Editar APR" : "Nova APR"}
     description="Preencha as etapas, salve o rascunho e finalize após a revisão."
     focusKey={step} onClose={close}
-    footer={<div className="flex w-full flex-wrap items-center justify-between gap-3">
+    footer={<div className={"flex w-full flex-wrap items-center justify-between gap-3"}>
       <div>{step > 1 && <Button type="button" variant="ghost" onClick={() => void persist(step - 1)} disabled={busy}>Voltar</Button>}</div>
-      <div className="flex flex-wrap items-center gap-2"><Button type="button" variant="secondary" disabled={busy} onClick={() => void persist(step, true)}>{save.isPending ? "Salvando…" : "Salvar rascunho"}</Button>
+      <div className={"flex flex-wrap items-center gap-2"}><Button type="button" variant="secondary" disabled={busy} onClick={() => void persist(step, true)}>{save.isPending ? "Salvando…" : "Salvar rascunho"}</Button>
         {step < 5 ? <Button type="button" disabled={busy} onClick={advance}>Continuar</Button> : canFinalize ? <Button type="button" disabled={busy || issues.length > 0 || form.formState.isDirty} onClick={finish}>{finalize.isPending ? "Finalizando…" : "Finalizar APR"}</Button> : null}</div>
     </div>}>
-    <div className="space-y-6"><WorkflowStepper steps={steps} current={step} onStep={(target) => void persist(target)} />
-      {message && <p role="alert" className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-950">{message}</p>}
+    <div className={"space-y-6"}><WorkflowStepper steps={steps} current={step} onStep={(target) => void persist(target)} />
+      {message && <p role="alert" className={"rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-950"}>{message}</p>}
       {step === 1 && <AprContextStep data={data} />}
       {step === 2 && <AprRisksStep data={data} />}
       {step === 3 && <AprQuestionsStep data={data} />}

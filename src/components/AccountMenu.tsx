@@ -18,18 +18,18 @@ export function AccountMenu({ session, onSignOut }: { session: Session; onSignOu
   const name = session.kind === 'company' && session.identity.name.trim() ? session.identity.name : 'Conta da plataforma';
 
   return <DropdownMenu
-    label={<span className="account-avatar" aria-hidden="true">{accountInitials(session)}</span>}
+    label={<span className={"account-avatar grid flex-none place-items-center w-[2.2rem] h-[2.2rem] rounded-[50%] text-white bg-accent-strong text-[0.75rem] font-extrabold tracking-[0.02em]"} aria-hidden="true">{accountInitials(session)}</span>}
     triggerAriaLabel={`Abrir menu da conta de ${name}`}
-    triggerClassName="account-menu__trigger"
-    menuClassName="account-menu__panel"
+    triggerClassName={"min-w-17 min-h-11 p-[0.25rem_0.45rem_0.25rem_0.25rem] rounded-[999px] gap-[0.35rem] aria-expanded:border-accent aria-expanded:bg-accent-soft"}
+    menuClassName={"w-[min(19rem,calc(100vw-1rem))] p-[0.4rem]"}
   >
-    <div className="account-menu__identity" role="presentation">
+    <div className={"grid gap-[0.15rem] p-[0.75rem_0.7rem_0.85rem] [&_strong]:text-[0.9rem] [&_span]:wrap-anywhere [&_span]:text-muted [&_span]:text-[0.8rem]"} role="presentation">
       <strong>{name}</strong>
       <span title={session.email}>{session.email}</span>
     </div>
-    <div className="account-menu__actions" role="presentation">
-      <DropdownItem className="account-menu__item" onClick={() => { void navigate({ to: '/account' }); }}><UserRound size={17} aria-hidden="true" />Perfil e conta</DropdownItem>
-      <DropdownItem className="account-menu__item danger" onClick={() => { void onSignOut(); }}><LogOut size={17} aria-hidden="true" />Sair</DropdownItem>
+    <div className={"pt-[0.35rem] border-t border-solid border-t-line"} role="presentation">
+      <DropdownItem className={"items-center gap-[0.65rem] min-h-[2.6rem] text-[0.86rem] font-[650] [&.danger:hover]:bg-danger-surface [&.danger:focus-visible]:bg-danger-surface"} onClick={() => { void navigate({ to: '/account' }); }}><UserRound size={17} aria-hidden="true" />Perfil e conta</DropdownItem>
+      <DropdownItem className={"items-center gap-[0.65rem] min-h-[2.6rem] text-[0.86rem] font-[650] [&.danger:hover]:bg-danger-surface [&.danger:focus-visible]:bg-danger-surface danger"} onClick={() => { void onSignOut(); }}><LogOut size={17} aria-hidden="true" />Sair</DropdownItem>
     </div>
   </DropdownMenu>;
 }

@@ -8,8 +8,8 @@ export function Documents({ scope, search, setSearch, permissions }: Omit<Props,
   const data = useDocuments({ scope, search, setSearch, permissions });
   const { query, selected, detail, latestRevisionId, revision, downloadPdf, editing } = data;
   return (
-    <div className="resource-layout">
-      <section className="resource-main">
+    <div className={"resource-layout grid grid-cols-[minmax(0,1fr)_minmax(20rem,25rem)] gap-4 items-start [&:not(:has(.editor-panel))]:grid-cols-[minmax(0,1fr)] max-[800px]:grid-cols-[1fr]"}>
+      <section className={"resource-main min-w-0 border border-solid border-line rounded-panel bg-surface shadow-panel p-4 max-[520px]:p-[0.85rem]"}>
         <ListToolbar
           value={search.q}
           onChange={(q) => setSearch({ q, page: 1 })}
@@ -52,7 +52,7 @@ export function Documents({ scope, search, setSearch, permissions }: Omit<Props,
           description="Documento finalizado e preservado por revisão."
           onClose={() => setSearch({ id: undefined })}
         >
-          <dl className="detail-list">
+          <dl className={"detail-list grid gap-[0.8rem] m-0 [&_div]:pb-[0.8rem] [&_div]:border-b [&_div]:border-solid [&_div]:border-b-line [&_dt]:text-muted [&_dt]:text-[0.75rem] [&_dt]:font-[750] [&_dd]:m-[0.3rem_0_0]"}>
             <div>
               <dt>Referência</dt>
               <dd>{detail.data?.referenceCode}</dd>
@@ -74,7 +74,7 @@ export function Documents({ scope, search, setSearch, permissions }: Omit<Props,
           </dl>
           {latestRevisionId && <Button type="button" variant="secondary" disabled={downloadPdf.isPending}
             onClick={() => downloadPdf.mutate()}>{downloadPdf.isPending ? "Preparando PDF…" : "Abrir PDF da APR"}</Button>}
-          {revision.data?.snapshot.answers?.length ? <section className="apr-revision-answers">
+          {revision.data?.snapshot.answers?.length ? <section className={"grid gap-[.6rem] mt-4 [&_>_div]:grid [&_>_div]:gap-[.25rem] [&_>_div]:p-[.65rem_0] [&_>_div]:border-b [&_>_div]:border-solid [&_>_div]:border-b-line [&_p]:m-0 [&_p]:text-[.82rem] [&_p]:leading-[1.4] [&_small]:text-muted [&_small]:leading-[1.4]"}>
             <strong>Checklist registrado</strong>
             {revision.data.snapshot.answers.map((answer, index) => <div key={answer.code}>
               <p>{index + 1}. {answer.text}</p>

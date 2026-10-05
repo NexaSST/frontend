@@ -8,7 +8,7 @@ describe("UI primitives", () => {
   it("applies button variants, sizes and loading state", () => {
     render(<Button variant="danger" size="sm" loading>Excluir</Button>);
     const button = screen.getByRole("button", { name: "Excluir" });
-    expect(button).toHaveClass("ui-button--danger", "ui-button--sm");
+    expect(button).toHaveClass("text-danger", "bg-danger-surface", "min-h-[2.4rem]");
     expect(button).toBeDisabled();
     expect(button).toHaveAttribute("aria-busy", "true");
   });
@@ -17,7 +17,7 @@ describe("UI primitives", () => {
     render(<><Input aria-label="Nome" invalid /><Select aria-label="Função"><option>Gestor</option></Select><Textarea aria-label="Notas" /><Checkbox aria-label="Ativo" /></>);
     expect(screen.getByLabelText("Nome")).toHaveAttribute("aria-invalid", "true");
     expect(screen.getByRole("combobox", { name: "Função" })).toHaveClass("ui-select__trigger");
-    expect(screen.getByLabelText("Notas")).toHaveClass("ui-textarea");
+    expect(screen.getByLabelText("Notas")).toHaveClass("resize-y");
     expect(screen.getByLabelText("Ativo")).toHaveAttribute("type", "checkbox");
   });
 
@@ -73,7 +73,7 @@ describe("UI primitives", () => {
   it("renders badge tones and actionable dropdown items in a portal", () => {
     const onClick = vi.fn();
     render(<><Badge tone="success">Ativo</Badge><DropdownMenu label="Ações"><DropdownItem onClick={onClick}>Editar</DropdownItem></DropdownMenu></>);
-    expect(screen.getByText("Ativo")).toHaveClass("ui-badge--success");
+    expect(screen.getByText("Ativo")).toHaveClass("bg-[#dff1e9]", "text-[#0b5b40]");
     fireEvent.click(screen.getByRole("button", { name: "Ações" }));
     const item = screen.getByRole("menuitem", { name: "Editar" });
     expect(item.closest("body")).toBe(document.body);

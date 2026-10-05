@@ -89,8 +89,8 @@ export function People({ scope, search, setSearch }: Omit<Props, "tab">) {
   const beginEdit = (person: Person) => { setEditing(person); form.reset({ fullName: person.fullName, externalCode: person.externalCode ?? '', contactEmail: person.contactEmail ?? '', startsOn: person.startsOn ?? new Date().toISOString().slice(0, 10),
     employmentType: person.employmentType ?? 'own', jobFunctionId: person.jobFunctionId ?? '', departmentId: person.departmentId ?? '', supplierId: person.supplierId ?? '', sectorId: person.sectorId ?? '' }); setSearch({ action: 'edit', id: person.id }); };
   return (
-    <div className="resource-layout">
-      <section className="resource-main">
+    <div className={"resource-layout grid grid-cols-[minmax(0,1fr)_minmax(20rem,25rem)] gap-4 items-start [&:not(:has(.editor-panel))]:grid-cols-[minmax(0,1fr)] max-[800px]:grid-cols-[1fr]"}>
+      <section className={"resource-main min-w-0 border border-solid border-line rounded-panel bg-surface shadow-panel p-4 max-[520px]:p-[0.85rem]"}>
         <ListToolbar
           value={search.q}
           onChange={(q) => setSearch({ q, page: 1 })}
@@ -104,11 +104,11 @@ export function People({ scope, search, setSearch }: Omit<Props, "tab">) {
               <strong>{r.fullName}</strong>,
               r.externalCode ?? "—",
               r.jobName ?? "—",
-              <span>{r.departmentName ?? "—"}{r.sectorName ? <small className="cell-detail">{r.sectorName}</small> : null}</span>,
+              <span>{r.departmentName ?? "—"}{r.sectorName ? <small className={"cell-detail block text-muted text-[0.72rem]"}>{r.sectorName}</small> : null}</span>,
               r.employmentType === "outsourced" ? `Terceirizado · ${r.supplierName ?? "—"}` : "Próprio",
             ])}
             keyOf={(i) => query.data!.rows[i]!.id}
-            renderActions={(i) => <span className="row-inline-actions"><Button variant="ghost" size="sm" onClick={() => beginEdit(query.data!.rows[i]!)}>Editar</Button><Button variant="ghost" size="sm" className="danger" onClick={() => setArchiving(query.data!.rows[i]!)}>Arquivar</Button></span>}
+            renderActions={(i) => <span className={"row-inline-actions inline-flex gap-1"}><Button variant="ghost" size="sm" onClick={() => beginEdit(query.data!.rows[i]!)}>Editar</Button><Button variant="ghost" size="sm" className={"danger"} onClick={() => setArchiving(query.data!.rows[i]!)}>Arquivar</Button></span>}
           />
           <PagedFooter
             data={query.data}
@@ -123,7 +123,7 @@ export function People({ scope, search, setSearch }: Omit<Props, "tab">) {
           onClose={() => { setEditing(null); setSearch({ action: undefined }); }}
         >
           <form
-            className="form-stack"
+            className={"grid gap-[0.8rem] [&_label]:grid [&_label]:gap-[0.4rem] [&_label]:text-muted [&_label]:text-[0.78rem] [&_label]:font-[750] [&_input:not([type='checkbox']):not([type='hidden'])]:w-full [&_input:not([type='checkbox']):not([type='hidden'])]:min-h-11 [&_input:not([type='checkbox']):not([type='hidden'])]:p-[0.65rem_0.75rem] [&_input:not([type='checkbox']):not([type='hidden'])]:border [&_input:not([type='checkbox']):not([type='hidden'])]:border-solid [&_input:not([type='checkbox']):not([type='hidden'])]:border-control-border [&_input:not([type='checkbox']):not([type='hidden'])]:rounded-control [&_input:not([type='checkbox']):not([type='hidden'])]:text-ink [&_input:not([type='checkbox']):not([type='hidden'])]:bg-white [&_input[aria-invalid='true']]:border-danger [&_.ui-checkbox-field]:flex [&_.ui-checkbox-field]:items-center [&_.ui-checkbox-field]:justify-between [&_.ui-checkbox-field]:gap-3 [&_.ui-checkbox-field]:w-full [&_.ui-checkbox-field]:min-h-10 [&_.ui-checkbox-field]:text-ink [&_.ui-checkbox-field]:cursor-pointer"}
             onSubmit={form.handleSubmit((v) => save.mutate(v))}
           >
             <Field label="Nome completo">

@@ -65,9 +65,9 @@ export function Combobox({ label, value, options, onChange, onSelect, placeholde
   const active = matches[Math.min(activeIndex, matches.length - 1)];
 
   return <span className={cx('block w-full min-w-0', className)}>
-    <span className="flex min-h-11 items-center gap-2.5 rounded-control border border-control-border bg-surface px-3 text-muted hover:border-[#9eaaa3] focus-within:border-accent focus-within:ring-3 focus-within:ring-control-focus has-[[aria-invalid=true]]:border-danger">
-      <Search size={18} className="shrink-0" aria-hidden="true" />
-      <input ref={inputRef} type="text" className="!min-h-0 !w-full !min-w-0 !flex-1 !rounded-none !border-0 !bg-transparent !p-0 !text-ink !shadow-none !outline-none placeholder:!text-[#68766f] focus:!outline-none focus-visible:!outline-none focus-visible:!outline-offset-0" role="combobox" aria-label={label}
+    <span className={"flex min-h-11 items-center gap-2.5 rounded-control border border-control-border bg-surface px-3 text-muted hover:border-[#9eaaa3] focus-within:border-accent focus-within:ring-3 focus-within:ring-control-focus has-[[aria-invalid=true]]:border-danger"}>
+      <Search size={18} className={"shrink-0"} aria-hidden="true" />
+      <input ref={inputRef} type="text" className={"!min-h-0 !w-full !min-w-0 !flex-1 !rounded-none !border-0 !bg-transparent !p-0 !text-ink !shadow-none !outline-none placeholder:!text-[#68766f] focus:!outline-none focus-visible:!outline-none focus-visible:!outline-offset-0"} role="combobox" aria-label={label}
         aria-autocomplete="list" aria-expanded={open} aria-controls={open ? listboxId : undefined}
         aria-activedescendant={open && active ? `${optionId}-${active.value}` : undefined}
         aria-invalid={invalid || undefined} autoComplete="off" placeholder={placeholder} disabled={disabled}
@@ -90,18 +90,18 @@ export function Combobox({ label, value, options, onChange, onSelect, placeholde
           if (event.key === 'Enter' && open) { event.preventDefault(); if (active) selectOption(active); }
           if (event.key === 'Tab' && open) closeWithoutSelection();
         }} />
-      <ChevronDown size={17} className="shrink-0" aria-hidden="true" />
+      <ChevronDown size={17} className={"shrink-0"} aria-hidden="true" />
     </span>
     {open && typeof document !== 'undefined' && createPortal(<div ref={menuRef} id={listboxId}
-      className="z-[1000] overflow-y-auto rounded-control border border-line bg-surface p-1 shadow-[var(--shadow-panel)]" role="listbox" aria-label={label} style={{ ...style, width: style.minWidth }}>
-      <div className="px-2.5 py-1.5 text-xs font-bold text-muted" role="status">{matches.length} {matches.length === 1 ? 'modelo encontrado' : 'modelos encontrados'}</div>
+      className={"z-[1000] overflow-y-auto rounded-control border border-line bg-surface p-1 shadow-[var(--shadow-panel)]"} role="listbox" aria-label={label} style={{ ...style, width: style.minWidth }}>
+      <div className={"px-2.5 py-1.5 text-xs font-bold text-muted"} role="status">{matches.length} {matches.length === 1 ? 'modelo encontrado' : 'modelos encontrados'}</div>
       {matches.length ? matches.map((option, index) => <button key={option.value} id={`${optionId}-${option.value}`}
         type="button" role="option" aria-selected={option.value === value} data-active={index === activeIndex}
-        className={cx('flex min-h-10 w-full items-center justify-between gap-3 rounded-lg border-0 bg-transparent px-2.5 py-2 text-left text-sm text-ink hover:bg-[#e9efeb] focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-control-focus',
-          index === activeIndex && 'bg-[#e9efeb]', option.value === value && 'bg-[#e3eee8] font-bold text-accent-strong')} onMouseDown={(event) => event.preventDefault()}
+        className={cx("flex min-h-10 w-full items-center justify-between gap-3 rounded-lg border-0 bg-transparent px-2.5 py-2 text-left text-sm text-ink hover:bg-[#e9efeb] focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-control-focus",
+          index === activeIndex && 'bg-[#e9efeb]', option.value === value && "bg-[#e3eee8] font-bold text-accent-strong")} onMouseDown={(event) => event.preventDefault()}
         onMouseEnter={() => setActiveIndex(index)} onClick={() => selectOption(option)}>
-        <span className="min-w-0 wrap-anywhere">{option.label}</span>{option.value === value && <Check size={16} aria-hidden="true" />}
-      </button>) : <p className="m-0 px-2.5 py-3 text-sm text-muted">Nenhum modelo encontrado. Tente outro termo ou NR.</p>}
+        <span className={"min-w-0 wrap-anywhere"}>{option.label}</span>{option.value === value && <Check size={16} aria-hidden="true" />}
+      </button>) : <p className={"m-0 px-2.5 py-3 text-sm text-muted"}>Nenhum modelo encontrado. Tente outro termo ou NR.</p>}
     </div>, inputRef.current?.closest('dialog') ?? document.body)}
   </span>;
 }

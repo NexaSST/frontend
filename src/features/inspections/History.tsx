@@ -83,7 +83,7 @@ export function History({ scope, search, setSearch, permissions }: Omit<Props, "
     finally { setExporting(null); }
   }
   return (
-    <section className="resource-main">
+    <section className={"resource-main min-w-0 border border-solid border-line rounded-panel bg-surface shadow-panel p-4 max-[520px]:p-[0.85rem]"}>
       {permissions.includes("inspection.review") && <MonthlyReportHeader
         title="Relatório mensal completo"
         description="Gere um único arquivo com todas as inspeções, respostas e evidências do mês."

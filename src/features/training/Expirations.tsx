@@ -34,7 +34,7 @@ export function Expirations({ scope, search, setSearch }: Omit<Props, 'tab'>) {
     } catch { sileo.error({ title: 'Não foi possível gerar o relatório' }); } finally { setExporting(null); }
   };
   return (
-    <section className="resource-main">
+    <section className={"resource-main min-w-0 border border-solid border-line rounded-panel bg-surface shadow-panel p-4 max-[520px]:p-[0.85rem]"}>
       <MonthlyReportHeader
         title="Relatório mensal de treinamentos"
         description="Vencimentos, pendências e treinamentos realizados no mês."
