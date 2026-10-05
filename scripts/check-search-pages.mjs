@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { JSDOM } from 'jsdom';
 const sitemap = await readFile('dist/sitemap.xml', 'utf8');
 const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => new URL(match[1]));
-assert.equal(urls.length, 9);
+assert.equal(urls.length, 14);
 for (const url of urls) {
   const dom = new JSDOM(await readFile(`dist${url.pathname}index.html`, 'utf8'));
   const doc = dom.window.document;
@@ -58,3 +58,7 @@ assert.equal(app.window.document.querySelector('#root').textContent, '');
 app.window.close();
 assert.match(await readFile('dist/_headers', 'utf8'), /Content-Type: text\/markdown/);
 console.log('Search output verified: crawlable HTML, canonical URLs, schema, internal links, Markdown and separate app shell.');
+
+const robots = await readFile('dist/robots.txt', 'utf8');
+if (process.env.CONTEXT && process.env.CONTEXT !== 'production') assert.equal(robots, 'User-agent: *\nDisallow: /\n');
+else for (const bot of ['OAI-SearchBot', 'Claude-SearchBot', 'Claude-User']) assert.ok(robots.includes(`User-agent: ${bot}\nAllow: /`));

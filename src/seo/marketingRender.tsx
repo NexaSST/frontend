@@ -1,0 +1,13 @@
+import { renderToStaticMarkup } from 'react-dom/server';
+import { MarketingHeader } from '../features/landing/MarketingHeader.js';
+import { demoUrl, siteUrl } from './content.js';
+import { marketingPages, type MarketingPage } from './marketingContent.js';
+export { marketingPages };
+const money = (value: number) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+export function renderMarketing(p: MarketingPage) {
+  const url = `${siteUrl}/${p.slug}/`;
+  return renderToStaticMarkup(<div className="marketing-page"><MarketingHeader /><main><nav aria-label="Caminho da página"><a href="/">Início</a> / {p.title}</nav><article><p className="marketing-page__eyebrow">{p.slug === 'sobre' ? 'Conheça o NexaSST' : 'Módulos NexaSST'}</p><h1>{p.title}</h1><p className="marketing-page__intro">{p.intro}</p>{p.sections.map(([title, text]) => <section key={title}><h2>{title}</h2><p>{text}</p></section>)}{p.tiers && <section><h2>Preços e capacidades</h2><div className="marketing-page__tiers">{p.tiers.map(([name, price, capacity]) => <div key={name}><h3>{name}</h3><p><strong>{money(price)}</strong> / mês</p><p>{capacity}</p></div>)}</div></section>}<section className="marketing-page__contact"><h2>Veja com a sua operação</h2><p>Converse sobre módulos, capacidades e condições da proposta comercial.</p><a className="marketing-header__cta" href={demoUrl} target="_blank" rel="noreferrer">Agendar demonstração pelo WhatsApp</a></section></article><aside><h2>Conheça os módulos</h2><ul>{marketingPages.filter((item) => item.slug !== p.slug).map((item) => <li key={item.slug}><a href={`/${item.slug}/`}>{item.title}</a></li>)}<li><a href="/#planos">Comparar os combos</a></li></ul></aside></main><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': p.slug === 'sobre' ? 'AboutPage' : 'WebPage', name: p.title, description: p.description, url, about: { '@type': 'Organization', '@id': `${siteUrl}/#organization`, name: 'NexaSST', url: siteUrl }, ...(p.slug === 'sobre' ? { mainEntity: { '@type': 'Person', '@id': `${siteUrl}/sobre/#matheus`, name: 'Matheus Padilha Rodrigues', url: `${siteUrl}/sobre/` } } : {}) }).replace(/</g, '\\u003c') }} /></div>);
+}
+export function marketingMarkdown(p: MarketingPage) {
+  return `# ${p.title}\n\nURL canônica: ${siteUrl}/${p.slug}/\n\n${p.intro}\n\n${p.sections.map(([h, t]) => `## ${h}\n\n${t}`).join('\n\n')}${p.tiers ? `\n\n## Preços e capacidades\n\n${p.tiers.map(([n, v, cap]) => `- ${n}: ${money(v)} / mês. ${cap}.`).join('\n')}` : ''}\n\n[Agendar demonstração](${demoUrl})\n\n${marketingPages.map((item) => `- [${item.title}](${siteUrl}/${item.slug}/)`).join('\n')}\n`;
+}
