@@ -74,7 +74,7 @@ export function Documents({ scope, search, setSearch, permissions }: Omit<Props,
           </dl>
           {latestRevisionId && <Button type="button" variant="secondary" disabled={downloadPdf.isPending}
             onClick={() => downloadPdf.mutate()}>{downloadPdf.isPending ? "Preparando PDF…" : "Abrir PDF da APR"}</Button>}
-          {revision.data?.snapshot.answers?.length ? <section className={"grid gap-[.6rem] mt-4 [&_>_div]:grid [&_>_div]:gap-[.25rem] [&_>_div]:p-[.65rem_0] [&_>_div]:border-b [&_>_div]:border-solid [&_>_div]:border-b-line [&_p]:m-0 [&_p]:text-[.82rem] [&_p]:leading-[1.4] [&_small]:text-muted [&_small]:leading-[1.4]"}>
+          {revision.data?.snapshot.answers?.length ? <section className={"grid gap-[.6rem] mt-4 [&_>_div]:grid [&_>_div]:gap-1 [&_>_div]:p-[.65rem_0] [&_>_div]:border-b [&_>_div]:border-solid [&_>_div]:border-b-line [&_p]:m-0 [&_p]:text-[.82rem] [&_p]:leading-[1.4] [&_small]:text-muted [&_small]:leading-[1.4]"}>
             <strong>Checklist registrado</strong>
             {revision.data.snapshot.answers.map((answer, index) => <div key={answer.code}>
               <p>{index + 1}. {answer.text}</p>

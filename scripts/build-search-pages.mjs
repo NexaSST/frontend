@@ -11,6 +11,8 @@ try {
   const escape = (s) => s.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;');
   const page = (title, description, path, markup, guide = false) => {
     const url = `${c.siteUrl}${path}`;
+    const socialTitle = path === '/' ? 'Menos papel. Mais prevenção. | NexaSST' : title;
+    const socialDescription = path === '/' ? 'Sua operação SST conectada, do campo à gestão. Organize treinamentos, inspeções e APR/PT com o NexaSST.' : description;
     const meta = `
 <link rel="canonical" href="${url}" />
 <link rel="alternate" type="text/markdown" href="${url}index.md" />
@@ -18,16 +20,20 @@ try {
 <meta property="og:type" content="${guide ? 'article' : 'website'}" />
 <meta property="og:locale" content="pt_BR" />
 <meta property="og:site_name" content="NexaSST" />
-<meta property="og:title" content="${escape(title)}" />
-<meta property="og:description" content="${escape(description)}" />
+<meta property="og:title" content="${escape(socialTitle)}" />
+<meta property="og:description" content="${escape(socialDescription)}" />
 <meta property="og:url" content="${url}" />
-<meta property="og:image" content="${c.siteUrl}/landing/product/web-dashboard-training.png" />
-<meta property="og:image:alt" content="Painel de treinamentos do NexaSST" />
+<meta property="og:image" content="${c.siteUrl}/social/nexasst-share-v1.jpg" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="3840" />
+<meta property="og:image:height" content="2160" />
+<meta property="og:image:alt" content="NexaSST — Menos papel. Mais prevenção. Capacete, colete e permissão de trabalho em 3D." />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="${escape(title)}" />
-<meta name="twitter:description" content="${escape(description)}" />
-<meta name="twitter:image" content="${c.siteUrl}/landing/product/web-dashboard-training.png" />`;
-    let html = template.replace(/<title>.*?<\/title>/s, `<title>${escape(title)}</title>`)
+<meta name="twitter:title" content="${escape(socialTitle)}" />
+<meta name="twitter:description" content="${escape(socialDescription)}" />
+<meta name="twitter:image" content="${c.siteUrl}/social/nexasst-share-v1.jpg" />
+<meta name="twitter:image:alt" content="NexaSST — Menos papel. Mais prevenção." />`;
+    let html = template.replace(/<meta\s+(?:property="og:[^"]+"|name="twitter:[^"]+")[^>]*>\s*/g, '').replace(/<title>.*?<\/title>/s, `<title>${escape(title)}</title>`)
       .replace(/(<meta name="description" content=")[^"]*/, `$1${escape(description)}`)
       .replace('noindex, follow', 'index, follow, max-image-preview:large')
       .replace('</head>', `${meta}\n</head>`).replace('<div id="root"></div>', `<div id="root">${markup}</div>`);
