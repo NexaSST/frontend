@@ -110,7 +110,7 @@ export function Templates({ scope, search, setSearch }: Omit<Props, "tab">) {
               {importCatalog.isPending ? "Atualizando…" : `Importar / atualizar ${pendingCount} modelos`}</Button>}
           </div>
           <div className={"grid border-t border-solid border-t-line"}>
-            {visibleCatalog.map((item) => <div className={"flex items-center justify-between gap-4 p-[.7rem_0] border-b border-solid border-b-line [&_>_div]:grid [&_>_div]:gap-[.2rem] [&_>_div]:min-w-0 [&_>_.apr-catalog-actions]:flex [&_>_.apr-catalog-actions]:items-center [&_>_.apr-catalog-actions]:justify-end [&_>_.apr-catalog-actions]:gap-[.25rem] [&_>_.apr-catalog-actions]:flex-[0_0_auto] [&_strong]:text-[.84rem] [&_small]:text-muted max-[640px]:items-start"} key={item.code}>
+            {visibleCatalog.map((item) => <div className={"flex items-center justify-between gap-4 p-[.7rem_0] border-b border-solid border-b-line [&_>_div]:grid [&_>_div]:gap-[.2rem] [&_>_div]:min-w-0 [&_>_.apr-catalog-actions]:flex [&_>_.apr-catalog-actions]:items-center [&_>_.apr-catalog-actions]:justify-end [&_>_.apr-catalog-actions]:gap-1 [&_>_.apr-catalog-actions]:flex-[0_0_auto] [&_strong]:text-[.84rem] [&_small]:text-muted max-[640px]:items-start"} key={item.code}>
               <div><strong>{item.name}</strong><small>{item.nr} · {item.questionCount} perguntas · {item.upToDate ? "Na filial" : item.imported ? "Atualização disponível" : "Pendente"}</small></div>
               <div className={"apr-catalog-actions"}>
                 <Button type="button" variant="ghost" size="icon" aria-label={`Ver detalhes de ${item.name}`}
@@ -173,7 +173,7 @@ export function Templates({ scope, search, setSearch }: Omit<Props, "tab">) {
           <section><h3>Riscos identificados</h3><p>{preview.data.riskSummary || "Não informado."}</p></section>
           <section><h3>Medidas de controle</h3><p>{preview.data.controlSummary || "Não informado."}</p></section>
           <section><h3>Perguntas de segurança</h3>
-            <ol className={"grid m-[.2rem_0_0] p-0 list-none [&_li]:flex [&_li]:gap-[.75rem] [&_li]:p-[.75rem_0] [&_li]:border-t [&_li]:border-solid [&_li]:border-t-line [&_li_>_div]:min-w-0 [&_small]:block [&_small]:mt-[.25rem] [&_small]:text-muted [&_small]:text-[.72rem]"}>
+            <ol className={"grid m-[.2rem_0_0] p-0 list-none [&_li]:flex [&_li]:gap-3 [&_li]:p-[.75rem_0] [&_li]:border-t [&_li]:border-solid [&_li]:border-t-line [&_li_>_div]:min-w-0 [&_small]:block [&_small]:mt-1 [&_small]:text-muted [&_small]:text-[.72rem]"}>
               {preview.data.questions.map((question, index) => <li key={question.code}>
                 <span className={"grid place-items-center flex-[0_0_1.5rem] h-6 rounded-[50%] text-accent-strong bg-accent-soft text-[.72rem] font-extrabold"}>{index + 1}</span>
                 <div><p>{question.text}</p><small>{question.required ? "Obrigatória" : "Opcional"} · {question.allowNa ? "Permite N/A" : "Sem N/A"}</small></div>
