@@ -1,3 +1,5 @@
+import { QrCodes } from "../features/qr-codes/QrCodes.js";
+import type { QrResource } from "../features/qr-codes/types.js";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { CompanyWorkspaceShell } from "../components/CompanyWorkspaceShell.js";
@@ -32,7 +34,7 @@ export function ModulePage() {
       ?.permissions ?? [];
   const canOperate = permissions.some((permission) => permission !== 'analytics.view');
   const aprArea: 'apr' | 'pt' = search.area ?? (search.tab === 'work-permits' || search.tab === 'pt-reports' ? 'pt' : 'apr');
-  const tabs = !canOperate ? [{ id: 'overview', label: 'Visão geral' }] :
+  const baseTabs = !canOperate ? [{ id: 'overview', label: 'Visão geral' }] :
     params.moduleCode === "inspections"
       ? [
           { id: "overview", label: "Visão geral" },
@@ -72,6 +74,11 @@ export function ModulePage() {
             { id: "rescue-plans", label: "Planos de resgate" },
             ...(permissions.includes("confined_spaces.approve") ? [{ id: "technical-responsibles", label: "Responsáveis técnicos" }, { id: "publications", label: "Publicação QR" }] : []),
           ];
+  const qrResource: QrResource | undefined = params.moduleCode === 'inspections' && permissions.includes('asset.manage') && permissions.includes('inspection.perform')
+    ? 'assets' : params.moduleCode === 'training' && branch?.foundationPermissions.includes('person.manage')
+      ? 'people' : params.moduleCode === 'confined_spaces' && permissions.includes('confined_spaces.manage')
+        ? 'confined-spaces' : undefined;
+  const tabs = qrResource ? [...baseTabs, { id: 'qr-codes', label: 'QR Codes' }] : baseTabs;
   const currentTab = tabs.some((tab) => tab.id === search.tab)
     ? search.tab!
     : "overview";
@@ -82,7 +89,8 @@ export function ModulePage() {
   return (
       <CompanyWorkspaceShell session={session} branch={branch} moduleCode={params.moduleCode} title={params.moduleCode === "apr" ? aprArea === 'pt' ? "Permissões de Trabalho" : "APRs" : labels[params.moduleCode] ?? params.moduleCode} description={`Operação de ${branch.name} · ${session.context.company.name}`} areas={tabs} currentArea={currentTab} onAreaChange={(tab) => setSearch({ tab, page: 1, q: "", nr: undefined, action: undefined, id: undefined })}>
       <ModuleTabs tabs={tabs} current={currentTab} onChange={(tab) => setSearch({ tab, page: 1, q: "", nr: undefined, action: undefined, id: undefined })} />
-      {params.moduleCode === "inspections" && (
+      {currentTab === "qr-codes" && qrResource && <QrCodes scope={scope} resource={qrResource} />}
+      {currentTab !== "qr-codes" && params.moduleCode === "inspections" && (
         <InspectionsModule
           scope={scope}
           tab={currentTab}
@@ -91,7 +99,7 @@ export function ModulePage() {
           setSearch={setSearch}
         />
       )}
-      {params.moduleCode === "training" && (
+      {currentTab !== "qr-codes" && params.moduleCode === "training" && (
         <TrainingModule
           scope={scope}
           tab={currentTab}
@@ -100,7 +108,7 @@ export function ModulePage() {
           setSearch={setSearch}
         />
       )}
-      {params.moduleCode === "apr" && (
+      {currentTab !== "qr-codes" && params.moduleCode === "apr" && (
         <AprModule
           scope={scope}
           tab={currentTab}
@@ -110,7 +118,7 @@ export function ModulePage() {
           setSearch={setSearch}
         />
       )}
-      {params.moduleCode === "confined_spaces" && (
+      {currentTab !== "qr-codes" && params.moduleCode === "confined_spaces" && (
         <ConfinedSpacesModule
           scope={scope}
           tab={currentTab}
