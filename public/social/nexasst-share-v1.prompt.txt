@@ -1,0 +1,11 @@
+Generated with the built-in image_gen tool using frontend illustration and brand references.
+Delivered JPEG: 3840x2160, enlarged from the generated 1672x941 raster using macOS sips, quality 88.
+
+Use case: ads-marketing
+Create one premium Brazilian NexaSST social sharing campaign image, horizontal 16:9, requested 3840x2160 output, highest available quality. This is a standalone poster, not a website screenshot.
+References: first three images are actual project safety 3D assets (yellow hard hat, work permit badge, orange reflective vest); fourth is the exact NexaSST brand symbol. Incorporate these recognizable assets, maintain their visual identity and material fidelity. Brand symbol small beside wordmark NexaSST.
+Palette: light off-white #f8f9f7, pale sage #eaf2ed, emerald #087a58, deep navy #06172f. Warm yellow/orange only in referenced safety objects.
+Composition: confident editorial poster. Very large centered headline in upper-middle two lines, spacious breathing room. Below headline a brief readable subtitle. Across lower third, a curated tactile 3D still-life of the three referenced objects, hard hat dominant, permit and vest secondary, resting on one understated pale sage curved platform. Brand lockup upper left; small domain bottom right. Keep all text with generous 8% safe margins, legible in thumbnail and center crops. Soft studio lighting, refined shadows, pristine warm light background. No fake dashboards, no buttons, no extra badges, no purple gradients or decorative orbs.
+Text verbatim: "NexaSST", headline "Menos papel." then "Mais prevenção." (second line emerald), subtitle "Sua operação SST conectada, do campo à gestão.", domain "nexasst.com.br". Typography refined Manrope-like sans, strong weight and hierarchy, correct Portuguese accents. Replace English WORK PERMIT on badge with "PT". Only specified text.
+
+Revision: built-in image_gen edit of the final poster. Change ONLY the navy letters PT on the cream badge to WP, preserving original typography, perspective, composition, logo, other text, colors, objects and lighting. Edited output enlarged to 3840x2160 with sips, JPEG quality 88.

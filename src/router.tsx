@@ -1,3 +1,4 @@
+import { PublicConfinedSpacePage } from "./pages/PublicConfinedSpacePage.js";
 import type { QueryClient } from '@tanstack/react-query';
 import { createRootRouteWithContext, createRoute, createRouter, Outlet, redirect } from '@tanstack/react-router';
 import { Toaster } from 'sileo';
@@ -31,6 +32,7 @@ const verifyEmailRoute = createRoute({ getParentRoute: () => rootRoute, path: '/
 const forgotPasswordRoute = createRoute({ getParentRoute: () => rootRoute, path: '/forgot-password', component: ForgotPasswordPage });
 const resetPasswordRoute = createRoute({ getParentRoute: () => rootRoute, path: '/reset-password', component: ResetPasswordPage });
 const publicAssetRoute = createRoute({ getParentRoute: () => rootRoute, path: '/public/assets/$token', component: PublicAssetPage });
+const publicConfinedSpaceRoute = createRoute({ getParentRoute: () => rootRoute, path: '/public/confined-spaces/$token', component: PublicConfinedSpacePage });
 const publicPersonRoute = createRoute({ getParentRoute: () => rootRoute, path: '/public/people/$token', component: PublicPersonPage });
 const authenticatedRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -103,7 +105,7 @@ export const peopleRoute = createRoute({ getParentRoute: () => authenticatedRout
   if (!branch?.foundationPermissions.some((permission) => permission === 'person.manage' || permission === 'analytics.view')) throw redirect({ to: '/app', search: { branchId: undefined, periodDays: undefined } });
 }, component: PeopleStructurePage });
 
-const routeTree = rootRoute.addChildren([landingRoute, legacyLandingRoute, loginRoute, masterLoginRoute, activateRoute, verifyEmailRoute, forgotPasswordRoute, resetPasswordRoute, publicAssetRoute, publicPersonRoute,
+const routeTree = rootRoute.addChildren([landingRoute, legacyLandingRoute, loginRoute, masterLoginRoute, activateRoute, verifyEmailRoute, forgotPasswordRoute, resetPasswordRoute, publicAssetRoute, publicPersonRoute, publicConfinedSpaceRoute,
   authenticatedRoute.addChildren([indexRoute, platformRoute, platformCompanyRoute, accountRoute, microsoftAccountRoute, branchRoute, moduleRoute, peopleRoute])]);
 export const router = createRouter({ routeTree, context: { queryClient: undefined! }, defaultPreload: 'intent' });
 
